@@ -1,0 +1,25 @@
+
+####datasouce 配置文件
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://localhost:3306/date?useUnicode=true&characterEncoding=utf8
+    driver-class-name: com.mysql.jdbc.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
+####redis 配置文件
+  redis:
+    host: 47.94.208.1
+    #host = localhost
+    port: 6379
+    password: zxx1994
+    jedis:
+      pool:
+        max-wait: 30000
+        max-idle: 30
+        min-idle: 5
+        max-active: 100
+  data:
+    redis:
+      repositories:
+        enabled: false
