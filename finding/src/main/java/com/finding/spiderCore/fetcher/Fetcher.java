@@ -1,0 +1,236 @@
+package com.finding.spiderCore.fetcher;
+
+import com.finding.spiderCore.crawldb.DBManager;
+import com.finding.spiderCore.crawldb.GeneratorFilter;
+import com.finding.spiderCore.fetcher.fetcherUtli.Executor;
+import com.finding.spiderCore.fetcher.fetcherUtli.NextFilter;
+import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * 抓取器
+ */
+
+public class Fetcher extends DefaultConfigImp {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Fetcher.class);
+
+    /**
+     * 核心组件
+     */
+    private FetchQueue fetchQueue;
+    private QueueFeeder queueFeeder;
+    /**
+     * 外部注入
+     */
+    private DBManager dbManager;
+    private Executor executor;
+    private NextFilter nextFilter = null;
+    /**
+     * 线程状态属性
+     * activeThreads 活动线程
+     * startedThreads 已启动线程
+     * spinWaiting 等待任务线程
+     * lastRequestStart 请求持续时间
+     */
+    private AtomicInteger activeThreads;
+    private AtomicInteger startedThreads;
+    private AtomicInteger spinWaiting;
+    private AtomicLong lastRequestStart;
+    public static final int FETCH_SUCCESS = 1;
+    public static final int FETCH_FAILED = 2;
+    /**
+     * 线程状态属性
+     * threads 线程数量
+     * fetcherRuning 调度器状态
+     */
+    private int threads = 50;
+    private volatile boolean fetcherRuning;
+    //private boolean isContentStored = false;
+
+    //初始化fetcher
+    public Fetcher(DBManager dbManager, Executor executor, NextFilter nextFilter) {
+        this.dbManager = dbManager;
+        this.executor = executor;
+        this.nextFilter = nextFilter;
+    }
+
+    /**
+     * 抓取当前所有任务，会阻塞到爬取完成 开启 feeder 和 执行爬取线程。
+     *
+     * @throws IOException 异常
+     */
+    public Integer fetcherStart() throws Exception {
+        if (executor == null) {
+            LOG.info("Please Specify A Executor!");
+            return 0;
+        }
+
+        //合并任务库
+
+        dbManager.merge();
+
+        try {
+            dbManager.initSegmentWriter();
+            LOG.info("init segmentWriter:" + dbManager.getClass().getName());
+
+            fetcherRuning = true;
+            lastRequestStart = new AtomicLong(System.currentTimeMillis());
+            activeThreads = new AtomicInteger(0);
+            startedThreads = new AtomicInteger(0);
+            spinWaiting = new AtomicInteger(0);
+            //初始化任务管道
+            fetchQueue = new FetchQueue();
+            //开启从Dbmanager中抽取任务添加到fetchQueue中，generator作任务状态过滤，添加上限1000个
+            queueFeeder = new QueueFeeder(this, 1000);
+            queueFeeder.start();
+
+            //初始化管道消费者 从queue中读取任务
+            FetcherThread[] fetcherThreads = new FetcherThread[threads];
+            for (int i = 0; i < threads; i++) {
+                fetcherThreads[i] = new FetcherThread(this);
+                fetcherThreads[i].start();
+            }
+            /*LOG.warn("打印管道中的任务");
+            fetchQueue.dump();*/
+            //主线程循环 提取 fetcher 的状态，如果为false 则开始停止爬虫
+            do {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                }
+                LOG.info("-activeThreads=" + activeThreads.get()
+                        + ", spinWaiting=" + spinWaiting.get() + ", fetchQueue.size="
+                        + fetchQueue.getSize());
+
+                if (!queueFeeder.isAlive() && fetchQueue.getSize() < 5) {
+                    fetchQueue.dump();
+                }
+
+                if ((System.currentTimeMillis() - lastRequestStart.get()) > getConfig().getThreadKiller()) {
+                    LOG.info("Aborting with " + activeThreads + " hung threads.");
+                    break;
+                }
+                /*pay addention*/
+                //LOG.info("fetcher 运行状态："+fetcherRuning+"------------------------");
+            } while (fetcherRuning && (startedThreads.get() != threads || activeThreads.get() > 0));
+
+            //立即停止任务添加到管道
+            //queueFeeder.stopFeeder();
+            fetcherRuning = false;
+            long waitThreadEndStartTime = System.currentTimeMillis();
+            if (activeThreads.get() > 0) {
+                LOG.info("wait for activeThreads to end");
+            }
+            /*判断时候用活动线程 清理所有活动线程*/
+            while (activeThreads.get() > 0) {
+                LOG.info("-activeThreads=" + activeThreads.get());
+                try {
+                    Thread.sleep(500);
+                } catch (Exception ex) {
+                }
+                //如果当前等待时间超过设置的线程停止时间，强制停止所有线程
+                if (System.currentTimeMillis() - waitThreadEndStartTime > getConfig().getWaitThreadEndTime()) {
+                    LOG.info("kill threads");
+                    for (int i = 0; i < fetcherThreads.length; i++) {
+                        if (fetcherThreads[i].isAlive()) {
+                            try {
+                                fetcherThreads[i].stop();
+                                LOG.info("kill thread " + i);
+                            } catch (Exception ex) {
+                                LOG.info("Exception", ex);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            LOG.info("clear all activeThread");
+            //停止 任务执行线程后清空管道
+            fetchQueue.clearQueue();//清空管道 redis 可以考虑重新将未抓取的url存回redis中
+        } finally {
+            if (queueFeeder != null) {
+                queueFeeder.closeGenerator();
+            }
+            dbManager.closeSegmentWriter();
+            LOG.info("close segmentWriter:" + dbManager.getClass().getName());
+        }
+        //返回生成的任务总数
+        return queueFeeder.getGenerator().getTotalGenerate();
+    }
+
+
+    /**
+     * 停止爬取
+     */
+    public void stopFetcher() {
+        //关闭任务添加工具
+        LOG.info("停止任务中。。。。。。。。。。。。。。。。。。。。。。。");
+        queueFeeder.stopFeeder();
+        //关闭调度器
+        fetcherRuning = false;
+    }
+
+
+    public FetchQueue getFetchQueue() {
+        return fetchQueue;
+    }
+
+    public QueueFeeder getQueueFeeder() {
+        return queueFeeder;
+    }
+
+    public DBManager getDbManager() {
+        return dbManager;
+    }
+
+    public void setDbManager(DBManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(Executor executor) {
+        this.executor = executor;
+    }
+
+    public NextFilter getNextFilter() {
+        return nextFilter;
+    }
+
+    public void setNextFilter(NextFilter nextFilter) {
+        this.nextFilter = nextFilter;
+    }
+
+    public AtomicInteger getActiveThreads() {
+        return activeThreads;
+    }
+
+    public AtomicInteger getStartedThreads() {
+        return startedThreads;
+    }
+
+    public AtomicInteger getSpinWaiting() {
+        return spinWaiting;
+    }
+
+    public AtomicLong getLastRequestStart() {
+        return lastRequestStart;
+    }
+
+    public void setThreads(int threads) {
+        this.threads = threads;
+    }
+
+    public boolean isFetcherRuning() {
+        return fetcherRuning;
+    }
+
+}
