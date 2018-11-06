@@ -78,7 +78,7 @@ public class MyParesContent implements ParesContent {
                 } else {
                     //正文为空
                     paresCounter.getInvalid().incrementAndGet();
-                    log.warn("已过滤正文为空的新闻");
+                   // log.warn("已过滤正文为空的新闻");
                 }
     }
     /**

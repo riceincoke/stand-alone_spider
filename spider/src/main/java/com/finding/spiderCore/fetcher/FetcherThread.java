@@ -85,7 +85,7 @@ public class FetcherThread extends Thread {
                             }
                             next = filteredNext;
                         }
-                        log.info("done: " + crawlDatum.briefInfo());
+                       // log.info("done: " + crawlDatum.briefInfo());
                         //当前页面标记为 已爬取
                         crawlDatum.setStatus(CrawlDatum.STATUS_DB_SUCCESS);
                     } catch (Exception ex) {

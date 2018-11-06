@@ -52,10 +52,10 @@ public class DataStoreTool implements Store<MyNew> {
         String sql = "insert into " + tableName + "(title,url,content,time,media,author) values(?,?,?,?,?,?)";
         //title url content time media author
         int x = jdbcTemplate.update(sql, myNew.getTitle(), myNew.getURL(), myNew.getContent(), myNew.getTime(), myNew.getMedia(), myNew.getAnthor());
-        if (x != 0) {
+       /* if (x != 0) {
             log.info("存入数据成功");
         } else {
             log.info("存入数据失败");
-        }
+        }*/
     }
 }
