@@ -37,7 +37,12 @@ public class MySpider extends AutoParseCrawler {
     private String[] seeds;
     private String[] conPickRules;
 
-    public MySpider() { }
+    public MySpider() {
+        //设置任务上限
+        this.configuration.setTopN(200);
+        //设置线程数
+        this.setThreads(50);
+    }
     /**
      * @Title：${enclosing_method}
      * @Description: [初始化爬虫组件]
@@ -63,8 +68,7 @@ public class MySpider extends AutoParseCrawler {
     public void configSpider(SiteConfig siteConfig){
          //设置爬虫入口
          this.addMyRegx();
-         //设置线程数
-         this.setThreads(50);
+
          //设置断点爬取
          this.setResumable(siteconfig.isRes());
          //设置自动解析url

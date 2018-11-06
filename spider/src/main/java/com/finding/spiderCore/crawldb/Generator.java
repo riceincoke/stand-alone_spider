@@ -41,7 +41,7 @@ public abstract class Generator<T> extends DefaultConfigImp {
     protected int maxExecuteCount;
 
     public Generator() {
-        this.setTopN(getConfig().getTopN());
+        this.setTopN(configuration.getTopN());
         this.totalGenerate = 0;
 //      this.maxExecuteCount = getConfig().getOrDefault(Configuration.KEY_MAX_EXECUTE_COUNT, Integer.MAX_VALUE);
         this.maxExecuteCount = getConfig().getMaxExecuteCount();
