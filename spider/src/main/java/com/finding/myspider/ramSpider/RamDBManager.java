@@ -17,8 +17,7 @@
  */
 package com.finding.myspider.ramSpider;
 
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawldb.Generator;
+import com.finding.spiderCore.crawldb.AbstractDBManager;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
 import org.slf4j.Logger;
@@ -27,15 +26,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 @Component
-public class RamDBManager extends DBManager {
+public class RamDBManager extends AbstractDBManager {
 
-    Logger LOG = LoggerFactory.getLogger(DBManager.class);
+    Logger LOG = LoggerFactory.getLogger(AbstractDBManager.class);
 
     private RamDB ramDB;
 
     public RamDBManager(RamGenerator ramGenerator) {
         super(ramGenerator);
-        this.ramDB = (RamDB) getGenerator().getDataBase();
+        this.ramDB = (RamDB) getAbstractGenerator().getDataBase();
     }
 
     @Override

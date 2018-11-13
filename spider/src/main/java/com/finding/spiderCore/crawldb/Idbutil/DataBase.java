@@ -1,4 +1,4 @@
-package com.finding.spiderCore.crawldb;
+package com.finding.spiderCore.crawldb.Idbutil;
 
 public interface DataBase<T> {
     /**

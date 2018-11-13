@@ -15,13 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.finding.spiderCore.crawldb;
+package com.finding.spiderCore.crawldb.Idbutil;
+
 
 import com.finding.spiderCore.entities.CrawlDatum;
+import com.finding.spiderCore.entities.CrawlDatums;
 
 /**
- *任务注入
+ * 爬取过程中，写入爬取历史、网页Content、解析信息的Writer
+ *
  */
-public interface Injector {
-      void inject(CrawlDatum datum) throws Exception;
+public interface SegmentWriter {
+
+     void initSegmentWriter() throws Exception;
+
+     void writeFetchSegment(CrawlDatum fetchDatum) throws Exception;
+
+     void writeParseSegment(CrawlDatums parseDatums) throws Exception;
+
+     void closeSegmentWriter() throws Exception;
+
 }

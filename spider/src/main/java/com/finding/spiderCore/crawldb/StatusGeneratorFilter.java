@@ -1,5 +1,6 @@
 package com.finding.spiderCore.crawldb;
 
+import com.finding.spiderCore.crawldb.Idbutil.GeneratorFilter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
 import org.springframework.stereotype.Component;

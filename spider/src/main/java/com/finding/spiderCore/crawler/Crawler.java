@@ -1,15 +1,13 @@
 package com.finding.spiderCore.crawler;
 
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
-import com.finding.spiderCore.crawldb.StatusGeneratorFilter;
+import com.finding.spiderCore.crawldb.AbstractDBManager;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
-import com.finding.spiderCore.fetcher.fetcherUtli.Executor;
+import com.finding.spiderCore.fetcher.IFetcherTools.Executor;
 import com.finding.spiderCore.fetcher.Fetcher;
-import com.finding.spiderCore.fetcher.fetcherUtli.NextFilter;
+import com.finding.spiderCore.fetcher.IFetcherTools.NextFilter;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
-import com.finding.spiderCore.spiderConfig.ConfigUtil.ConfigurationUtils;
+import com.finding.spiderCore.spiderConfig.configUtil.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +32,14 @@ public class Crawler extends DefaultConfigImp {
 
     protected Executor executor = null;
     protected NextFilter nextFilter = null;
-    protected DBManager dbManager;
+    protected AbstractDBManager abstractDbManager;
     //protected GeneratorFilter generatorFilter = new StatusGeneratorFilter();
     protected void inject() throws Exception {
-        dbManager.inject(seeds);
+        abstractDbManager.inject(seeds);
     }
 
     protected void injectForcedSeeds() throws Exception {
-        dbManager.inject(forcedSeeds, true);
+        abstractDbManager.inject(forcedSeeds, true);
     }
 
 
@@ -58,19 +56,19 @@ public class Crawler extends DefaultConfigImp {
         LOG.info("配置信息："+this.configuration.toString());
         LOG.info(this.toString());
         //register dbmanager conf
-        ConfigurationUtils.setTo(this, dbManager, executor, nextFilter);
+        ConfigurationUtils.setTo(this, abstractDbManager, executor, nextFilter);
         registerOtherConfigurations();
 
         if (!resumable) {
-            if (dbManager.isDBExists()) {
-                dbManager.clear();
+            if (abstractDbManager.isDBExists()) {
+                abstractDbManager.clear();
             }
             if (seeds.isEmpty() && forcedSeeds.isEmpty()) {
                 LOG.error("error:Please add at least one seed");
                 return;
             }
         }
-        dbManager.open();
+        abstractDbManager.open();
 
         if (!seeds.isEmpty()) {
             inject();
@@ -85,7 +83,7 @@ public class Crawler extends DefaultConfigImp {
             }
             LOG.info("start depth " + (i + 1));
             long startTime = System.currentTimeMillis();
-            fetcher = new Fetcher(dbManager,executor,nextFilter);
+            fetcher = new Fetcher(abstractDbManager,executor,nextFilter);
             //register fetcher conf
             ConfigurationUtils.setTo(this,fetcher);
 
@@ -102,7 +100,7 @@ public class Crawler extends DefaultConfigImp {
                 break;
             }
         }
-        dbManager.close();
+        abstractDbManager.close();
         afterStop();
     }
 
@@ -356,8 +354,8 @@ public class Crawler extends DefaultConfigImp {
         this.status = status;
     }
 
-    public void setDbManager(DBManager dbManager) {
-        this.dbManager = dbManager;
+    public void setAbstractDbManager(AbstractDBManager abstractDbManager) {
+        this.abstractDbManager = abstractDbManager;
     }
 
     @Override
@@ -366,7 +364,7 @@ public class Crawler extends DefaultConfigImp {
         sb.append("Crawler Details:\n")
                 .append("Crawler: ").append(getClass()).append("\n")
                 .append("Executor: ").append(executor.getClass()).append("\n")
-                .append("DBManager: ").append(dbManager.getClass()).append("\n")
+                .append("AbstractDBManager: ").append(abstractDbManager.getClass()).append("\n")
                 .append("NextFilter: ");
         if (nextFilter == null) {
             sb.append("null");

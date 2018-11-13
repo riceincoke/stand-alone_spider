@@ -1,12 +1,11 @@
 package com.finding.myspider.redisSpider;
 
 import com.finding.myspider.spiderComponent.MyRequester;
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawler.AbstractSpider;
+import com.finding.spiderCore.crawler.AbstractAutoParseCrawler;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.entities.Page;
 
-public class RedisSpider extends AbstractSpider {
+public class RedisSpider extends AbstractAutoParseCrawler {
 
     public RedisSpider( ) {
         this.setAutoParse(true);

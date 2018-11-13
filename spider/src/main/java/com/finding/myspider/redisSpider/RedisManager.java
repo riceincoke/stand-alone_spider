@@ -1,10 +1,8 @@
 package com.finding.myspider.redisSpider;
 
 import com.finding.myspider.spiderTools.SerializeUtil;
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawldb.DataBase;
-import com.finding.spiderCore.crawldb.Generator;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
+import com.finding.spiderCore.crawldb.AbstractDBManager;
+import com.finding.spiderCore.crawldb.Idbutil.DataBase;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Component;
  * desc:连接操作redis类
  **/
 @Component
-public class RedisManager extends DBManager {
+public class RedisManager extends AbstractDBManager {
      private RedisDb redisDb;
      private RedisTemplate redisTemplate;
      private SerializeUtil serializeUtil;

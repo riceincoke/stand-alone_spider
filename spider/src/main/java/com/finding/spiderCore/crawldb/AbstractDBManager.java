@@ -1,17 +1,20 @@
 package com.finding.spiderCore.crawldb;
 
+import com.finding.spiderCore.crawldb.Idbutil.DataBase;
+import com.finding.spiderCore.crawldb.Idbutil.Injector;
+import com.finding.spiderCore.crawldb.Idbutil.SegmentWriter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
 
-public abstract class DBManager extends DefaultConfigImp implements Injector, SegmentWriter {
+public abstract class AbstractDBManager extends DefaultConfigImp implements Injector, SegmentWriter {
 
-    private Generator generator;
+    private AbstractGenerator abstractGenerator;
     private DataBase dataBase;
 
-    public DBManager(Generator generator){
-            setGenerator(generator);
-            setDataBase(generator.getDataBase());
+    public AbstractDBManager(AbstractGenerator abstractGenerator){
+            setAbstractGenerator(abstractGenerator);
+            setDataBase(abstractGenerator.getDataBase());
         }
     public abstract boolean isDBExists();
 
@@ -61,11 +64,11 @@ public abstract class DBManager extends DefaultConfigImp implements Injector, Se
         inject(datum);
     }
 
-    public Generator getGenerator() {
-        return generator;
+    public AbstractGenerator getAbstractGenerator() {
+        return abstractGenerator;
     }
-    public void setGenerator(Generator generator) {
-        this.generator = generator;
+    public void setAbstractGenerator(AbstractGenerator abstractGenerator) {
+        this.abstractGenerator = abstractGenerator;
     }
     public DataBase getDataBase() {
         return dataBase;

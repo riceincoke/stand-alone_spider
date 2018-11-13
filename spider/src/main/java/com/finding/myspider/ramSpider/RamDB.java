@@ -17,7 +17,7 @@
  */
 package com.finding.myspider.ramSpider;
 
-import com.finding.spiderCore.crawldb.DataBase;
+import com.finding.spiderCore.crawldb.Idbutil.DataBase;
 import com.finding.spiderCore.entities.CrawlDatum;
 import org.springframework.stereotype.Component;
 

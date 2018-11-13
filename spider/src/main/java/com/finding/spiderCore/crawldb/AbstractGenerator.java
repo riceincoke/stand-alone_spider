@@ -18,20 +18,20 @@
 package com.finding.spiderCore.crawldb;
 
 
+import com.finding.spiderCore.crawldb.Idbutil.DataBase;
+import com.finding.spiderCore.crawldb.Idbutil.GeneratorFilter;
 import com.finding.spiderCore.entities.CrawlDatum;
-import com.finding.spiderCore.spiderConfig.ConfigUtil.ConfigurationUtils;
+import com.finding.spiderCore.spiderConfig.configUtil.ConfigurationUtils;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
-import com.finding.spiderCore.spiderConfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * 任务生成器
  */
-public abstract class Generator<T> extends DefaultConfigImp {
+public abstract class AbstractGenerator<T> extends DefaultConfigImp {
 
-    public static final Logger LOG = LoggerFactory.getLogger(Generator.class.getSimpleName());
+    public static final Logger LOG = LoggerFactory.getLogger(AbstractGenerator.class.getSimpleName());
 
     protected DataBase<T> dataBase;
     protected GeneratorFilter filter = null;
@@ -40,7 +40,7 @@ public abstract class Generator<T> extends DefaultConfigImp {
     protected int totalGenerate;
     protected int maxExecuteCount;
 
-    public Generator() {
+    public AbstractGenerator() {
         this.setTopN(configuration.getTopN());
         this.totalGenerate = 0;
 //      this.maxExecuteCount = getConfig().getOrDefault(Configuration.KEY_MAX_EXECUTE_COUNT, Integer.MAX_VALUE);
@@ -117,7 +117,7 @@ public abstract class Generator<T> extends DefaultConfigImp {
 
     @Override
     public String toString() {
-        return "Generator{" +
+        return "AbstractGenerator{" +
                 "\n generatorFilter=" +(filter == null? "null":filter.getClass().getName()) +
                 "\n topN=" + topN +
                 "\n totalGenerate=" + totalGenerate +

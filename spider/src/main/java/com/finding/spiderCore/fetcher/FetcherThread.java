@@ -2,8 +2,8 @@ package com.finding.spiderCore.fetcher;
 
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
-import com.finding.spiderCore.fetcher.fetcherUtli.Executor;
-import com.finding.spiderCore.fetcher.fetcherUtli.NextFilter;
+import com.finding.spiderCore.fetcher.IFetcherTools.Executor;
+import com.finding.spiderCore.fetcher.IFetcherTools.NextFilter;
 import com.finding.spiderCore.spiderConfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,10 +97,10 @@ public class FetcherThread extends Thread {
                     crawlDatum.setExecuteTime(System.currentTimeMillis());
                     try {
                         //写入当前任务到已抓取的任务库
-                        fetcher.getDbManager().writeFetchSegment(crawlDatum);
+                        fetcher.getAbstractDbManager().writeFetchSegment(crawlDatum);
                         if (crawlDatum.getStatus() == CrawlDatum.STATUS_DB_SUCCESS && !next.isEmpty()) {
                             //写入当前任务提取的符合条件的任务到 后续未抓取的任务库
-                            fetcher.getDbManager().writeParseSegment(next);
+                            fetcher.getAbstractDbManager().writeParseSegment(next);
                         }
                     } catch (Exception ex) {
                         log.info("Exception when updating db", ex);

@@ -1,4 +1,4 @@
-package com.finding.spiderCore.spiderConfig;
+package com.finding.spiderCore.spiderconfig;
 
 public interface CustomConfig {
     Configuration getConfig();

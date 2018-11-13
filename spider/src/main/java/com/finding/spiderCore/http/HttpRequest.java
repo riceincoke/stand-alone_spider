@@ -5,7 +5,6 @@ import com.finding.spiderCore.entities.Page;
 import com.finding.spiderCore.spiderConfig.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

@@ -2,7 +2,6 @@ package com.finding.myspider;
 
 
 import com.finding.myspider.DbUtils.DataStoreTool;
-import com.finding.myspider.ramSpider.RamDB;
 import com.finding.myspider.ramSpider.RamDBManager;
 import com.finding.myspider.spiderComponent.MyRequester;
 import com.finding.myspider.spiderComponent.MyParesContent;
@@ -10,7 +9,7 @@ import com.finding.myspider.spiderTools.ParesUtil;
 import com.finding.myspider.entity.SiteConfig;
 import com.finding.myspider.DbUtils.ConfigFromMysqlToRedis;
 import com.finding.myspider.spiderTools.SerializeUtil;
-import com.finding.spiderCore.spiderConfig.ConfigUtil.ConfigurationUtils;
+import com.finding.spiderCore.spiderConfig.configUtil.ConfigurationUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -85,8 +84,8 @@ public class SpiderEngine {
                 paresUtil.initParesUitl(sc, dataStoreTool);
                 paresContent.initParesUitl(paresUtil,sc.getContentRules());
                 MySpider mySpider = new MySpider();
-                ConfigurationUtils.setTo(mySpider, ramDBManager.getGenerator());
-                mySpider.setDbManager(ramDBManager);
+                ConfigurationUtils.setTo(mySpider, ramDBManager.getAbstractGenerator());
+                mySpider.setAbstractDbManager(ramDBManager);
                 mySpider.initMySpider(sc,paresContent, myRequester, paresUtil);
                 log.info(this.toString());
 

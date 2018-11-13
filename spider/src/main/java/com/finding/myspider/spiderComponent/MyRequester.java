@@ -3,7 +3,7 @@ package com.finding.myspider.spiderComponent;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.Page;
 import com.finding.spiderCore.http.HttpRequest;
-import com.finding.spiderCore.http.Requester;
+import com.finding.spiderCore.http.IRequestor.Requester;
 import org.springframework.stereotype.Component;
 
 @Component

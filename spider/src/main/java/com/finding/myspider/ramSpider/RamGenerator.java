@@ -1,7 +1,7 @@
 package com.finding.myspider.ramSpider;
 
-import com.finding.spiderCore.crawldb.Generator;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
+import com.finding.spiderCore.crawldb.AbstractGenerator;
+import com.finding.spiderCore.crawldb.Idbutil.GeneratorFilter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 @Component
-public class RamGenerator extends Generator<HashMap> {
+public class RamGenerator extends AbstractGenerator<HashMap> {
     private static Logger log = Logger.getLogger(RamGenerator.class);
     public RamGenerator(RamDB ramDB,GeneratorFilter generatorFilter) {
         this.dataBase = ramDB;

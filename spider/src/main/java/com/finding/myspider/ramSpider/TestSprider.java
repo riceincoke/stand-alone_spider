@@ -1,7 +1,6 @@
 
 package com.finding.myspider.ramSpider;
 
-import com.finding.spiderCore.crawldb.DBManager;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.entities.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ public class TestSprider extends RamCrawler {
 
     public void testSpiderStart() throws Exception {
         TestSprider crawler = new TestSprider();
-        this.dbManager = ramDBManager;
+        this.abstractDbManager = ramDBManager;
         crawler.addSeed("https://book.douban.com/tag/", "taglist");
         crawler.setAutoParse(true);
 

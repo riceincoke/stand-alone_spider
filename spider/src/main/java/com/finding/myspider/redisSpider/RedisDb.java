@@ -1,10 +1,7 @@
 package com.finding.myspider.redisSpider;
 
-import com.finding.myspider.spiderTools.SerializeUtil;
-import com.finding.spiderCore.crawldb.DataBase;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.finding.spiderCore.crawldb.Idbutil.DataBase;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component

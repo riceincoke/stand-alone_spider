@@ -1,16 +1,14 @@
 package com.finding.myspider;
 
 
-import com.finding.spiderCore.crawler.AutoParseCrawler;
+import com.finding.spiderCore.crawler.AbstractAutoParseCrawler;
 import com.finding.spiderCore.pares.ParesContent;
 import com.finding.myspider.spiderTools.ParesUtil;
 import com.finding.myspider.entity.SiteConfig;
 import com.finding.myspider.spiderTools.RulesSplitUtil;
-import com.finding.spiderCore.crawldb.DBManager;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.entities.Page;
-import com.finding.spiderCore.http.Requester;
-import com.finding.spiderCore.crawler.AbstractSpider;
+import com.finding.spiderCore.http.IRequestor.Requester;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,7 +17,7 @@ import org.apache.log4j.Logger;
  * <p>描述: [爬虫初始化组件] </p>
  *
  **/
-public class MySpider extends AutoParseCrawler {
+public class MySpider extends AbstractAutoParseCrawler {
 
     private static Logger log = Logger.getLogger(MySpider.class);
     /**

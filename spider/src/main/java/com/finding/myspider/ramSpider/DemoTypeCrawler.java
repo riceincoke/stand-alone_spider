@@ -18,9 +18,7 @@
 package com.finding.myspider.ramSpider;
 
 import com.finding.myspider.spiderComponent.MyRequester;
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawler.AbstractSpider;
-import com.finding.spiderCore.crawler.AutoParseCrawler;
+import com.finding.spiderCore.crawler.AbstractAutoParseCrawler;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.entities.Page;
 import org.apache.log4j.Logger;
@@ -46,7 +44,7 @@ import org.springframework.stereotype.Component;
  * 3）在定义CrawlDatum时：crawlDatum.type(type)
  */
 @Component
-public class DemoTypeCrawler extends AutoParseCrawler{
+public class DemoTypeCrawler extends AbstractAutoParseCrawler {
     private static Logger log = Logger.getLogger(DemoTypeCrawler.class);
     @Autowired private RamDBManager ramDBManager;
     public DemoTypeCrawler() {
@@ -58,7 +56,7 @@ public class DemoTypeCrawler extends AutoParseCrawler{
          */
         MyRequester myRequester = new MyRequester();
         this.setRequester(myRequester);
-        this.dbManager = ramDBManager;
+        this.abstractDbManager = ramDBManager;
         /**
          * siteConfig
          */
@@ -105,7 +103,7 @@ public class DemoTypeCrawler extends AutoParseCrawler{
                 ", seeds=" + seeds +
                 ", forcedSeeds=" + forcedSeeds +
                 ", executor=" + executor.getClass().getName() +
-                ", dbManager=" + dbManager.toString() +
+                ", abstractDbManager=" + abstractDbManager.toString() +
                 ", configuration=" + configuration.toString() +
                 '}';
     }

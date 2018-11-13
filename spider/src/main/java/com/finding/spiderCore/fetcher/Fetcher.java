@@ -1,9 +1,8 @@
 package com.finding.spiderCore.fetcher;
 
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
-import com.finding.spiderCore.fetcher.fetcherUtli.Executor;
-import com.finding.spiderCore.fetcher.fetcherUtli.NextFilter;
+import com.finding.spiderCore.crawldb.AbstractDBManager;
+import com.finding.spiderCore.fetcher.IFetcherTools.Executor;
+import com.finding.spiderCore.fetcher.IFetcherTools.NextFilter;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class Fetcher extends DefaultConfigImp {
     /**
      * 外部注入
      */
-    private DBManager dbManager;
+    private AbstractDBManager abstractDbManager;
     private Executor executor;
     private NextFilter nextFilter = null;
     /**
@@ -54,8 +53,8 @@ public class Fetcher extends DefaultConfigImp {
     //private boolean isContentStored = false;
 
     //初始化fetcher
-    public Fetcher(DBManager dbManager, Executor executor, NextFilter nextFilter) {
-        this.dbManager = dbManager;
+    public Fetcher(AbstractDBManager abstractDbManager, Executor executor, NextFilter nextFilter) {
+        this.abstractDbManager = abstractDbManager;
         this.executor = executor;
         this.nextFilter = nextFilter;
     }
@@ -73,11 +72,11 @@ public class Fetcher extends DefaultConfigImp {
 
         //合并任务库
 
-        dbManager.merge();
+        abstractDbManager.merge();
 
         try {
-            dbManager.initSegmentWriter();
-            LOG.info("init segmentWriter:" + dbManager.getClass().getName());
+            abstractDbManager.initSegmentWriter();
+            LOG.info("init segmentWriter:" + abstractDbManager.getClass().getName());
 
             fetcherRuning = true;
             lastRequestStart = new AtomicLong(System.currentTimeMillis());
@@ -157,11 +156,11 @@ public class Fetcher extends DefaultConfigImp {
             if (queueFeeder != null) {
                 queueFeeder.closeGenerator();
             }
-            dbManager.closeSegmentWriter();
-            LOG.info("close segmentWriter:" + dbManager.getClass().getName());
+            abstractDbManager.closeSegmentWriter();
+            LOG.info("close segmentWriter:" + abstractDbManager.getClass().getName());
         }
         //返回生成的任务总数
-        return queueFeeder.getGenerator().getTotalGenerate();
+        return queueFeeder.getAbstractGenerator().getTotalGenerate();
     }
 
 
@@ -185,12 +184,12 @@ public class Fetcher extends DefaultConfigImp {
         return queueFeeder;
     }
 
-    public DBManager getDbManager() {
-        return dbManager;
+    public AbstractDBManager getAbstractDbManager() {
+        return abstractDbManager;
     }
 
-    public void setDbManager(DBManager dbManager) {
-        this.dbManager = dbManager;
+    public void setAbstractDbManager(AbstractDBManager abstractDbManager) {
+        this.abstractDbManager = abstractDbManager;
     }
 
     public Executor getExecutor() {

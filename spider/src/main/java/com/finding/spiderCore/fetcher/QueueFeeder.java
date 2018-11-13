@@ -1,9 +1,7 @@
 package com.finding.spiderCore.fetcher;
 
-import com.finding.spiderCore.crawldb.DBManager;
-import com.finding.spiderCore.crawldb.Generator;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
-import com.finding.spiderCore.crawldb.StatusGeneratorFilter;
+import com.finding.spiderCore.crawldb.AbstractDBManager;
+import com.finding.spiderCore.crawldb.AbstractGenerator;
 import com.finding.spiderCore.entities.CrawlDatum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,8 @@ public class QueueFeeder extends Thread {
     private static final Logger log = LoggerFactory.getLogger(QueueFeeder.class);
 
     private FetchQueue queue;
-    private DBManager dbManager;
-    private Generator generator;
+    private AbstractDBManager abstractDbManager;
+    private AbstractGenerator abstractGenerator;
     private FetchItem fetchItem;
     //private GeneratorFilter generatorFilter = null;
     private int queueMaxSize;// queeue 大小最大值设置
@@ -28,7 +26,7 @@ public class QueueFeeder extends Thread {
      **/
     public QueueFeeder(Fetcher fetcher, Integer size) {
         this.queue = fetcher.getFetchQueue();
-        this.dbManager = fetcher.getDbManager();
+        this.abstractDbManager = fetcher.getAbstractDbManager();
         this.queueMaxSize = size;
     }
 
@@ -42,7 +40,7 @@ public class QueueFeeder extends Thread {
         try {
             closeGenerator();
         } catch (Exception e) {
-            log.error("stoping generator exception");
+            log.error("stoping abstractGenerator exception");
         }
         FeederRunning = false;
         while (this.isAlive()) {
@@ -60,9 +58,9 @@ public class QueueFeeder extends Thread {
      * @Return: void
      **/
     public void closeGenerator() throws Exception {
-        if (generator != null) {
-            generator.close();
-            log.info("close generator:" + generator.getClass().getName() + " ......");
+        if (abstractGenerator != null) {
+            abstractGenerator.close();
+            log.info("close abstractGenerator:" + abstractGenerator.getClass().getName() + " ......");
         }
     }
 
@@ -75,10 +73,10 @@ public class QueueFeeder extends Thread {
     @Override
     public void run() {
         //获取任务生成工具 （从数据库中提取数据）
-        generator = dbManager.getGenerator();
-        log.info(generator.toString());
-        //generator.setFilter(new StatusGeneratorFilter());
-        //log.info("create generator:" + generator.getClass().getName());
+        abstractGenerator = abstractDbManager.getAbstractGenerator();
+        log.info(abstractGenerator.toString());
+        //abstractGenerator.setFilter(new StatusGeneratorFilter());
+        //log.info("create abstractGenerator:" + abstractGenerator.getClass().getName());
         boolean hasMore = true;//判断任务来源中是否存在任务 redis
         FeederRunning = true;
         while (hasMore && FeederRunning) {
@@ -94,7 +92,7 @@ public class QueueFeeder extends Thread {
             //如果queue中小于1000，往queue中添加新任务
             while (feed > 0 && hasMore && FeederRunning) {
                 //任务生成器 如果下一个任务为空，返回空。判断dbmananger中是否有后续任务
-                CrawlDatum datum = generator.next();
+                CrawlDatum datum = abstractGenerator.next();
                 hasMore = (datum != null);
                 if (hasMore) {
                     fetchItem = new FetchItem();
@@ -106,7 +104,7 @@ public class QueueFeeder extends Thread {
         }
     }
 
-    public Generator getGenerator() {
-        return generator;
+    public AbstractGenerator getAbstractGenerator() {
+        return abstractGenerator;
     }
 }

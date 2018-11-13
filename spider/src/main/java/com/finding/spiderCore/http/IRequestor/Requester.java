@@ -1,4 +1,4 @@
-package com.finding.spiderCore.http;
+package com.finding.spiderCore.http.IRequestor;
 
 
 import com.finding.spiderCore.entities.CrawlDatum;

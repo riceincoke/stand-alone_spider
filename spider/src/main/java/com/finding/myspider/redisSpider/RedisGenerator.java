@@ -1,9 +1,8 @@
 package com.finding.myspider.redisSpider;
 
 import com.finding.myspider.spiderTools.SerializeUtil;
-import com.finding.spiderCore.crawldb.DataBase;
-import com.finding.spiderCore.crawldb.Generator;
-import com.finding.spiderCore.crawldb.GeneratorFilter;
+import com.finding.spiderCore.crawldb.AbstractGenerator;
+import com.finding.spiderCore.crawldb.Idbutil.GeneratorFilter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ import javax.annotation.Resource;
  * @author 一杯咖啡
  */
 @Component
-public class RedisGenerator extends Generator {
+public class RedisGenerator extends AbstractGenerator {
     private static Logger log = LoggerFactory.getLogger(DefaultConfigImp.class);
 
     @Autowired private SerializeUtil serializeUtil;

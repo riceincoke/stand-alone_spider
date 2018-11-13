@@ -17,6 +17,8 @@
  */
 package com.finding.spiderCore.entities;
 
+import com.finding.spiderCore.entities.IMetas.MetaGetter;
+import com.finding.spiderCore.entities.IMetas.MetaSetter;
 import com.finding.spiderCore.entities.entityUtil.GsonUtils;
 import com.finding.spiderCore.entities.entityUtil.ListUtils;
 import com.finding.spiderCore.entities.entityUtil.RegexRule;
@@ -39,7 +41,7 @@ import java.util.regex.Pattern;
  * Page是爬取过程中，内存中保存网页爬取信息的一个容器，Page只在内存中存放，用于保存一些网页信息，方便用户进行自定义网页解析之类的操作。
  *
  */
-public class Page implements MetaGetter, MetaSetter<Page>{
+public class Page implements MetaGetter, MetaSetter<Page> {
 
     public static final Logger LOG = LoggerFactory.getLogger(Page.class);
 
