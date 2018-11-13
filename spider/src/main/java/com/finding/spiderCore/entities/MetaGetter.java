@@ -1,7 +1,9 @@
 package com.finding.spiderCore.entities;
 
 import com.google.gson.JsonObject;
-
+/**
+ *  desc: 任务元数据
+ */
 public interface MetaGetter {
 
      JsonObject meta();
