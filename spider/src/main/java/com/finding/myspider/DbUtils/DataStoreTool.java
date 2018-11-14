@@ -1,6 +1,6 @@
 package com.finding.myspider.DbUtils;
 
-import com.finding.myspider.DbUtils.dbInterfaces.Store;
+import com.finding.myspider.DbUtils.IStore.Store;
 import com.finding.myspider.entity.MyNew;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

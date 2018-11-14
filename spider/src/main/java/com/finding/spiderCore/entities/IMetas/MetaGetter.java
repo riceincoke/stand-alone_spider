@@ -1,4 +1,4 @@
-package com.finding.spiderCore.entities;
+package com.finding.spiderCore.entities.IMetas;
 
 import com.google.gson.JsonObject;
 /**

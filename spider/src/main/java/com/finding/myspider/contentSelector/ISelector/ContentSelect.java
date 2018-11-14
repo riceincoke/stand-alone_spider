@@ -1,4 +1,4 @@
-package com.finding.myspider.spiderTools.contentSelector;
+package com.finding.myspider.contentSelector.ISelector;
 
 /**
  * desc: 网页内容提取接口

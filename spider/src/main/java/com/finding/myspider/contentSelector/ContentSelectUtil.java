@@ -1,9 +1,11 @@
-package com.finding.myspider.spiderTools.contentSelector;
+package com.finding.myspider.contentSelector;
+
+import com.finding.myspider.contentSelector.ISelector.ContentSelect;
 
 /**
  * desc: 网页内容提取实现
  **/
-public class ContentSelectUtil implements ContentSelect{
+public class ContentSelectUtil implements ContentSelect {
     @Override
     public String titleSelect() {
         return null;

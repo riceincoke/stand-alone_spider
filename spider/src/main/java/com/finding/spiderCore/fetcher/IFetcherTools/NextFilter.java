@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 hu
+ * Copyright (C) 2017 hu
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,16 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.finding.spiderCore.fetcher.fetcherUtli;
+package com.finding.spiderCore.fetcher.IFetcherTools;
 
-import com.finding.spiderCore.entities.CrawlDatums;
-import com.finding.spiderCore.entities.Page;
 
+import com.finding.spiderCore.entities.CrawlDatum;
 /**
- *遍历器
+ *过滤器
  */
-public interface Visitor {
+public interface NextFilter {
 
-      void visit(Page page, CrawlDatums next);
-
+     CrawlDatum filter(CrawlDatum nextItem, CrawlDatum referer);
 }

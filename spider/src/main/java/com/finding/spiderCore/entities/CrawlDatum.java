@@ -17,6 +17,8 @@
  */
 package com.finding.spiderCore.entities;
 
+import com.finding.spiderCore.entities.IMetas.MetaGetter;
+import com.finding.spiderCore.entities.IMetas.MetaSetter;
 import com.finding.spiderCore.entities.entityUtil.CrawlDatumFormater;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;

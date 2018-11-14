@@ -17,6 +17,7 @@
  */
 package com.finding.spiderCore.entities;
 
+import com.finding.spiderCore.entities.IMetas.MetaSetter;
 import com.google.gson.JsonObject;
 
 import java.util.Collection;

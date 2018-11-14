@@ -1,7 +1,7 @@
-package com.finding.spiderCore.spiderConfig.ConfigUtil;
+package com.finding.spiderCore.spiderConfig.configUtil;
 
 
-import com.finding.spiderCore.spiderConfig.CustomConfig;
+import com.finding.spiderCore.spiderConfig.IConfig.CustomConfig;
 
 public class ConfigurationUtils {
 //    public static void addParent(Object child, Configured parent){

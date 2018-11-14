@@ -1,7 +1,7 @@
 package com.finding.myspider.spiderTools;
 
 import com.finding.myspider.DbUtils.DataStoreTool;
-import com.finding.myspider.DbUtils.dbInterfaces.Store;
+import com.finding.myspider.DbUtils.IStore.Store;
 import com.finding.myspider.entity.ContentRules;
 import com.finding.myspider.entity.MyNew;
 import com.finding.myspider.entity.SiteConfig;

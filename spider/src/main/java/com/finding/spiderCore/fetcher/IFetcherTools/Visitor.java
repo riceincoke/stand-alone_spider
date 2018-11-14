@@ -15,15 +15,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.finding.spiderCore.fetcher.fetcherUtli;
+package com.finding.spiderCore.fetcher.IFetcherTools;
 
-
-import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
+import com.finding.spiderCore.entities.Page;
 
 /**
- * 页面处理
+ *遍历器
  */
-public interface Executor{
-     void execute(CrawlDatum datum, CrawlDatums next) throws Exception;
+public interface Visitor {
+
+      void visit(Page page, CrawlDatums next);
+
 }

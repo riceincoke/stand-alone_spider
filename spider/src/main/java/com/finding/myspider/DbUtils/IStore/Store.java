@@ -1,4 +1,4 @@
-package com.finding.myspider.DbUtils.dbInterfaces;
+package com.finding.myspider.DbUtils.IStore;
 
 /**
  * desc: 数据存储接口
