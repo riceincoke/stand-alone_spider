@@ -12,15 +12,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 抓取器
- */
-
+* @author 一杯咖啡
+* @desc 调度器，生产者，任务管道，消费者调度器
+* @createTime
+*/
 public class Fetcher extends DefaultConfigImp {
 
     private static final Logger LOG = LoggerFactory.getLogger(Fetcher.class);
 
     /**
      * 核心组件
+     * fetchQueue:任务管道
+     * queueFeeder 任务生产者
      */
     private FetchQueue fetchQueue;
     private QueueFeeder queueFeeder;
@@ -48,7 +51,7 @@ public class Fetcher extends DefaultConfigImp {
      * threads 线程数量
      * fetcherRuning 调度器状态
      */
-    private int threads = 50;
+    private int threads = 20;
     private volatile boolean fetcherRuning;
     //private boolean isContentStored = false;
 
@@ -162,7 +165,6 @@ public class Fetcher extends DefaultConfigImp {
         //返回生成的任务总数
         return queueFeeder.getAbstractGenerator().getTotalGenerate();
     }
-
 
     /**
      * 停止爬取

@@ -28,7 +28,7 @@ import java.util.LinkedList;
 
 /**
  * 用于存储多个URL的数据结构，继承于ArrayList
- *
+ *封装为任务数据结构
  * @author hu
  */
 public class Links implements Iterable<String> {

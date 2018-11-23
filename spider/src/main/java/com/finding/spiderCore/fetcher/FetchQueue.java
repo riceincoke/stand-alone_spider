@@ -8,6 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+* @author 一杯咖啡
+* @desc 任务缓存管道
+* @createTime
+*/
 public class FetchQueue {
     private static final Logger LOG = LoggerFactory.getLogger(FetchQueue.class);
 

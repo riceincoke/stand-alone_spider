@@ -3,9 +3,10 @@ package com.finding.spiderCore.fetcher;
 import com.finding.spiderCore.entities.CrawlDatum;
 
 /**
- * desc: 执行器任务单体
- * @Return:
- **/
+* @author 一杯咖啡
+* @desc 任务数据实体
+* @createTime
+*/
 public class FetchItem {
 
     private CrawlDatum datum;

@@ -2,11 +2,16 @@ package com.finding.spiderCore.fetcher;
 
 import com.finding.spiderCore.crawldb.AbstractDBManager;
 import com.finding.spiderCore.crawldb.AbstractGenerator;
+import com.finding.spiderCore.crawldb.Idbutil.GeneratorFilter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+* @author 一杯咖啡
+* @desc 任务生产者
+* @createTime
+*/
 public class QueueFeeder extends Thread {
 
     private static final Logger log = LoggerFactory.getLogger(QueueFeeder.class);
@@ -15,13 +20,14 @@ public class QueueFeeder extends Thread {
     private AbstractDBManager abstractDbManager;
     private AbstractGenerator abstractGenerator;
     private FetchItem fetchItem;
-    //private GeneratorFilter generatorFilter = null;
-    private int queueMaxSize;// queeue 大小最大值设置
-    public volatile boolean FeederRunning = true;//feeder 的状态
+    private GeneratorFilter generatorFilter = null;
+    //queeue 大小最大值设置
+    private int queueMaxSize;
+    //feeder 的状态
+    public volatile boolean FeederRunning = true;
 
     /**
      * desc:初始化feeder
-     *
      * @Return:
      **/
     public QueueFeeder(Fetcher fetcher, Integer size) {
@@ -29,10 +35,8 @@ public class QueueFeeder extends Thread {
         this.abstractDbManager = fetcher.getAbstractDbManager();
         this.queueMaxSize = size;
     }
-
     /**
      * desc:关闭管道添加工具
-     *
      * @Return: void
      **/
     public void stopFeeder() {
@@ -63,11 +67,8 @@ public class QueueFeeder extends Thread {
             log.info("close abstractGenerator:" + abstractGenerator.getClass().getName() + " ......");
         }
     }
-
-
     /**
      * desc: feeder 线程运行
-     *
      * @Return:
      **/
     @Override

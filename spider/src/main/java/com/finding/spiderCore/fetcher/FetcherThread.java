@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * desc:线程，从queue中取得任务，并使用任务执行器执行
- **/
+* @author 一杯咖啡
+* @desc 任务消费者
+* @createTime
+*/
 public class FetcherThread extends Thread {
     private static final Logger log = LoggerFactory.getLogger(FetcherThread.class);
     /**

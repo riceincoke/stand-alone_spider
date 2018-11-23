@@ -79,7 +79,10 @@ public class HttpRequest{
     }
 
 
-    //发送http请求，并获取返回的内容
+    /**
+     * desc:发送http请求，并获取返回的内容
+     * @Return:
+     **/
     public HttpResponse response() throws Exception {
         URL url = new URL(crawlDatum.url());
         if(userAgent!=null){
@@ -184,6 +187,10 @@ public class HttpRequest{
         }
     }
 
+    /**
+     * desc: 配置请求头
+     * @Return:
+     **/
     public void config(HttpURLConnection con) throws Exception {
 
         con.setRequestMethod(method);

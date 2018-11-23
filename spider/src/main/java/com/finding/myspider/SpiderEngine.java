@@ -3,6 +3,7 @@ package com.finding.myspider;
 
 import com.finding.myspider.DbUtils.DataStoreTool;
 import com.finding.myspider.ramSpider.RamDBManager;
+import com.finding.myspider.redisSpider.RedisManager;
 import com.finding.myspider.spiderComponent.MyRequester;
 import com.finding.myspider.spiderComponent.MyParesContent;
 import com.finding.myspider.spiderTools.ParesUtil;
@@ -21,8 +22,8 @@ public class SpiderEngine {
     /**
      *  数据管理组件
      **/
-    // @Autowired private RedisManager redisManager;
-    @Autowired private RamDBManager ramDBManager;
+     @Autowired private RedisManager redisManager;
+    //@Autowired private RamDBManager ramDBManager;
     @Autowired private RedisTemplate redisTemplate;
     @Autowired private ConfigFromMysqlToRedis configFromMysqlToRedis;
     @Autowired private SerializeUtil serializeUtil;
@@ -37,7 +38,7 @@ public class SpiderEngine {
     @Override
     public String toString() {
         return "\nMySpiderEngine{" +
-                "\n  ramDBManager : " + ramDBManager.getClass().getName() +
+                "\n  ramDBManager : " + redisManager.getClass().getName() +
                 "\n  redisTemplate : " + redisTemplate.getClass().getName() +
                 "\n  siteConfigCache : " + configFromMysqlToRedis.getClass().getName() +
                 "\n  myRequester : " + myRequester.getClass().getName() +
@@ -84,8 +85,8 @@ public class SpiderEngine {
                 paresUtil.initParesUitl(sc, dataStoreTool);
                 paresContent.initParesUitl(paresUtil,sc.getContentRules());
                 MySpider mySpider = new MySpider();
-                ConfigurationUtils.setTo(mySpider, ramDBManager.getAbstractGenerator());
-                mySpider.setAbstractDbManager(ramDBManager);
+                ConfigurationUtils.setTo(mySpider, redisManager.getAbstractGenerator());
+                mySpider.setAbstractDbManager(redisManager);
                 mySpider.initMySpider(sc,paresContent, myRequester, paresUtil);
                 log.info(this.toString());
 
