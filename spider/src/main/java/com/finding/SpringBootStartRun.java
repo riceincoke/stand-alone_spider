@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import javax.annotation.PostConstruct;
 
@@ -26,6 +27,9 @@ public class SpringBootStartRun implements ApplicationRunner {
 
     @PostConstruct
     public void show() {
+        RedisSerializer stringSerializer = redisTemplate.getStringSerializer();
+        redisTemplate.setKeySerializer(stringSerializer);
+        redisTemplate.setValueSerializer(stringSerializer);
         log.info("redisTemplate" +redisTemplate.toString());
         log.info(" environment properties : " +environment.getProperty("user.dir"));
     }

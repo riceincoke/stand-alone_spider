@@ -113,6 +113,7 @@ public class CrawlDatum implements Serializable, MetaGetter, MetaSetter<CrawlDat
         return executeCount;
     }
 
+    //默认有
     public static final String META_KEY_TYPE = "s_t";
 
     public String type() {
