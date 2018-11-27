@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataStoreTool implements Store<MyNew> {
 
-    private static Logger log = Logger.getLogger(DataStoreTool.class);
+     private static Logger LOG = Logger.getLogger(DataStoreTool.class);
 
-    @Autowired private JdbcTemplate jdbcTemplate;
+     @Autowired private JdbcTemplate jdbcTemplate;
      private String tableName;
 
      public void initStore(String tableName){
+         LOG.info("DataStoreTool初始化--->>"+toString());
          this.tableName = tableName;
          creatTable(tableName);
      }
@@ -37,9 +38,9 @@ public class DataStoreTool implements Store<MyNew> {
                             + "PRIMARY KEY (new_id)"
                             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
             );
-            log.info("Tips : CreatTable - " + tableName + " Success");
+            LOG.info("Tips : CreatTable - " + tableName + " Success");
         } catch (Exception e) {
-            log.error("mysql未开启或JDBCHelper.createMysqlTemplate中参数配置不正确! "+e.getCause());
+            LOG.error("mysql未开启或JDBCHelper.createMysqlTemplate中参数配置不正确! "+e.getCause());
         }
     }
 
@@ -53,9 +54,17 @@ public class DataStoreTool implements Store<MyNew> {
         //title url content time media author
         int x = jdbcTemplate.update(sql, myNew.getTitle(), myNew.getURL(), myNew.getContent(), myNew.getTime(), myNew.getMedia(), myNew.getAnthor());
        /* if (x != 0) {
-            log.info("存入数据成功");
+            LOG.info("存入数据成功");
         } else {
-            log.info("存入数据失败");
+            LOG.info("存入数据失败");
         }*/
+    }
+
+    @Override
+    public String toString() {
+        return "DataStoreTool{" +
+                "jdbcTemplate=" + jdbcTemplate +
+                ", tableName='" + tableName + '\'' +
+                '}';
     }
 }

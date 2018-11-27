@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * desc: 解析url 记录数据总量工具
  **/
-@Component
 public class ParesCounter {
     /**
      *  TotalData 总数

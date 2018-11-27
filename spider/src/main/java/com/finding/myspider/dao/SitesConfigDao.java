@@ -1,6 +1,6 @@
 package com.finding.myspider.dao;
 
-import com.finding.myspider.entity.ContentRules;
+import com.finding.myspider.entity.ParseContentRules;
 import com.finding.myspider.entity.SiteConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  **/
 @Component
 public class SitesConfigDao {
-    private static final Logger log = Logger.getLogger(SitesConfigDao.class.getSimpleName());
+    private static final Logger LOG = Logger.getLogger(SitesConfigDao.class.getSimpleName());
 
     @Autowired JdbcTemplate jdbcTemplate;
 
@@ -33,22 +33,22 @@ public class SitesConfigDao {
         if (results.next()) {
             siteName = results.getString(2);
         }else {
-            log.warning("网站配置数据库为空");
+            LOG.warning("网站配置数据库为空");
         }
         results.beforeFirst();
-        ContentRules CR = readContentRules(siteName);
+        ParseContentRules CR = readContentRules(siteName);
         List<SiteConfig> sfList = ObjectRelation(results, CR);
         return sfList;
     }
 
-    public ContentRules readContentRules(String siteName) {
+    public ParseContentRules readContentRules(String siteName) {
         String sql = "SELECT * from contentRules WHERE siteName = '" + siteName+"'";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
-        ContentRules cs = null;
+        ParseContentRules cs = null;
         if (result.next()) {
             result.beforeFirst();
             while (result.next()) {
-                cs = new ContentRules();
+                cs = new ParseContentRules();
                 cs.setTitle_rule(result.getString(3));
                 cs.setContent_rule(result.getString(4));
                 cs.setTime_rule(result.getString(5));
@@ -57,17 +57,17 @@ public class SitesConfigDao {
             }
             return cs;
         } else {
-            log.warning("正文提取规则为空");
+            LOG.warning("正文提取规则为空");
             return cs;
         }
     }
 
     public boolean insertSiteConfig(SiteConfig sc) {
         String sfsql = "INSERT INTO siteConfig(siteName,siteUrl,resume,contentPares,urlPares,seeds,deepPath,autoParse,tableName) VALUES (?,?,?,?,?,?,?,?,?)";
-        int sfindex = jdbcTemplate.update(sfsql, sc.getSiteName(), sc.getSiteUrl(), sc.isRes(), sc.getContentPares(), sc.getUrlPares(), sc.getSeeds(), sc.getDeepPath(), sc.isAutoParse(), sc.getTableName());
+        int sfindex = jdbcTemplate.update(sfsql, sc.getSiteName(), sc.getSiteUrl(), sc.isRes(), sc.getPageParse(), sc.getUrlPares(), sc.getSeeds(), sc.getDeepPath(), sc.isAutoParse(), sc.getTableName());
 
         String sql = "insert into contentRules(siteName,title_rule,content_rule,time_rule,media_rule,author_rule) values(?,?,?,?,?,?)";
-        ContentRules cr = sc.getContentRules();
+        ParseContentRules cr = sc.getParseContentRules();
         int crindex = jdbcTemplate.update(sql, sc.getSiteName(), cr.getTitle_rule(), cr.getContent_rule(), cr.getTime_rule(), cr.getMedia_rule(), cr.getAnthor_rule());
 
         if (sfindex != 0 && crindex != 0) {
@@ -77,7 +77,7 @@ public class SitesConfigDao {
         }
     }
 
-    public List<SiteConfig> ObjectRelation(SqlRowSet resultSet, ContentRules contentRules) {
+    public List<SiteConfig> ObjectRelation(SqlRowSet resultSet, ParseContentRules parseContentRules) {
         SiteConfig siteconfig;
         List<SiteConfig> list = new ArrayList<>();
         if (resultSet.next()) {
@@ -92,8 +92,8 @@ public class SitesConfigDao {
                 siteconfig.setTableName(resultSet.getString(9));
                 siteconfig.setUrlPares(resultSet.getString(10));
                 siteconfig.setSeeds(resultSet.getString(6));
-                siteconfig.setContentPares(resultSet.getString(5));
-                siteconfig.setContentRules(contentRules);
+                siteconfig.setPageParse(resultSet.getString(5));
+                siteconfig.setParseContentRules(parseContentRules);
                 list.add(siteconfig);
             }
             return list;

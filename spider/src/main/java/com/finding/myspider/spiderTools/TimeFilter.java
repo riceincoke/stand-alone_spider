@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
  * <p>项目名称: ${小型分布式爬虫} </p>
  * <p>文件名称: ${字符串中提取时间} </p>
  **/
-
-@Component
 public class TimeFilter {
     /**
      * desc:正则表达式提取正文时间

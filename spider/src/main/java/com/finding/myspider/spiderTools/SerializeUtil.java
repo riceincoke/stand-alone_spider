@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
  **/
 @Component
 public class SerializeUtil {
-    private static final Logger log = Logger.getLogger(SerializeUtil.class);
+    private static final Logger LOG = Logger.getLogger(SerializeUtil.class);
 
     /**
      * @Title：${序列化}
@@ -23,7 +23,7 @@ public class SerializeUtil {
      * @author <a href="mail to: 113985238@qq.com" rel="nofollow">whitenoise</a>
      */
     public String serializeToString(Object obj) throws Exception{
-        //log.info("对象序列化，存入redis");
+        //LOG.info("对象序列化，存入redis");
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
         objOut.writeObject(obj);
@@ -38,7 +38,7 @@ public class SerializeUtil {
      * @author <a href="mail to: *******@******.com" rel="nofollow">作者</a>
      */
     public Object deserializeToObject(String str) throws Exception{
-        //log.info("对象反序列化，进入程序");
+        //LOG.info("对象反序列化，进入程序");
         ByteArrayInputStream byteIn = new ByteArrayInputStream(str.getBytes("ISO-8859-1"));
         ObjectInputStream objIn = new ObjectInputStream(byteIn);
         Object obj =objIn.readObject();

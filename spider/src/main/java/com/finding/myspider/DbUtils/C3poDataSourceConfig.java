@@ -18,7 +18,7 @@ import java.util.Properties;
  **/
 @Configuration
 public class C3poDataSourceConfig {
-    private static final Logger log = Logger.getLogger(C3poDataSourceConfig.class);
+    private static final Logger LOG = Logger.getLogger(C3poDataSourceConfig.class);
 
     @Profile(value = "online")
     @Bean(name = "dataSource")
@@ -28,9 +28,9 @@ public class C3poDataSourceConfig {
         try {
             properties.load(C3poDataSourceConfig.class.getClassLoader().getResourceAsStream("c3p0.properties"));
             if (properties == null) {
-                log.error("未获取到数据库配置文件");
+                LOG.error("未获取到数据库配置文件");
             }
-//            log.info("数据库配置文件：" + properties.toString());
+//            LOG.info("数据库配置文件：" + properties.toString());
 //            c3p0数据库连接池
             ComboPooledDataSource  dataSources = new ComboPooledDataSource();
             dataSources.setDriverClass(properties.getProperty("jdbc.driverClass"));
@@ -45,7 +45,7 @@ public class C3poDataSourceConfig {
             dataSources.setMinPoolSize(Integer.parseInt(properties.getProperty("jdbc.minPoolSize")));
             return dataSources;
         } catch (Exception e) {
-            log.error("C3p0 连接池初始化失败:\n" + "Message:" + e.getMessage() + "\nCaused By:" + e.getCause());
+            LOG.error("C3p0 连接池初始化失败:\n" + "Message:" + e.getMessage() + "\nCaused By:" + e.getCause());
             return null;
         }
     }

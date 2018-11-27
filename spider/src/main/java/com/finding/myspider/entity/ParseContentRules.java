@@ -4,15 +4,19 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
+/**
+ * @author 一杯咖啡
+ * @desc 正文提取规则封装
+ */
 @Component
-public class ContentRules implements Serializable{
+public class ParseContentRules implements Serializable{
     private String title_rule;
     private String content_rule;
     private String time_rule;
     private String media_rule;
     private String anthor_rule;
 
-    public ContentRules() {
+    public ParseContentRules() {
     }
 
     @Override

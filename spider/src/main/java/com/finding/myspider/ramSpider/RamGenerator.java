@@ -11,16 +11,15 @@ import java.util.Iterator;
 import java.util.Map;
 @Component
 public class RamGenerator extends AbstractGenerator<HashMap> {
-    private static Logger log = Logger.getLogger(RamGenerator.class);
-    public RamGenerator(RamDB ramDB,GeneratorFilter generatorFilter) {
-        this.dataBase = ramDB;
-        this.filter = generatorFilter;
+    private static Logger LOG = Logger.getLogger(RamGenerator.class);
+    public RamGenerator(GeneratorFilter generatorFilter) {
+        setFilter(generatorFilter);
     }
 
     @Override
     public CrawlDatum nextWithoutFilter() throws Exception {
         //获取爬虫任务数据库
-        HashMap crawl = dataBase.getCrawlDB();
+        HashMap crawl = getDataBase().getCrawlDB();
         //获取遍历器
         Iterator<Map.Entry> iterator = crawl.entrySet().iterator();
         if(iterator.hasNext()){
@@ -34,5 +33,6 @@ public class RamGenerator extends AbstractGenerator<HashMap> {
 
     @Override
     public void close() throws Exception {
+
     }
 }

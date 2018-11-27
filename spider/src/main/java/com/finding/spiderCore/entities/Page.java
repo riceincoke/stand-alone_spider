@@ -17,14 +17,10 @@
  */
 package com.finding.spiderCore.entities;
 
-import com.finding.spiderCore.entities.IMetas.MetaGetter;
-import com.finding.spiderCore.entities.IMetas.MetaSetter;
 import com.finding.spiderCore.entities.entityUtil.GsonUtils;
 import com.finding.spiderCore.entities.entityUtil.ListUtils;
 import com.finding.spiderCore.entities.entityUtil.RegexRule;
 import com.finding.spiderCore.http.httpUtil.CharsetDetector;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -82,32 +78,6 @@ public class Page{
         }
         return Pattern.matches(contentTypeRegex, contentType());
     }
-
-    public JsonObject jsonObject() {
-        return GsonUtils.parse(html()).getAsJsonObject();
-    }
-
-    public JsonArray jsonArray() {
-        return GsonUtils.parse(html()).getAsJsonArray();
-    }
-
-    public JsonObject regexJSONObject(String regex) {
-        return GsonUtils.parse(regex(regex)).getAsJsonObject();
-    }
-
-    public JsonObject regexJSONObject(String regex, int group) {
-        return GsonUtils.parse(regex(regex, group)).getAsJsonObject();
-    }
-
-    public JsonArray regexJSONArray(String regex) {
-        return GsonUtils.parse(regex(regex)).getAsJsonArray();
-    }
-
-    public JsonArray regexJSONArray(String regex, int group) {
-        return GsonUtils.parse(regex(regex, group)).getAsJsonArray();
-    }
-
-
     /**
      * 获取网页中满足指定css选择器的所有元素的指定属性的集合
      * 例如通过attrs("img[src]","abs:src")可获取网页中所有图片的链接

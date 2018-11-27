@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
  * <p>文件名称: ${RulesSpiltUtil} </p>
  * <p>描述: [字符串 解析为 字符串集合] </p>
  **/
-@Component
 public class RulesSplitUtil {
     /**
      * desc:分解规则 ，

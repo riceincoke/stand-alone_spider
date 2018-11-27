@@ -18,16 +18,15 @@ import javax.annotation.Resource;
  */
 @Component
 public class RedisGenerator extends AbstractGenerator<String> {
-    private static Logger log = LoggerFactory.getLogger(DefaultConfigImp.class);
+    private static Logger LOG = LoggerFactory.getLogger(DefaultConfigImp.class);
 
     @Autowired
     private SerializeUtil serializeUtil;
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    public RedisGenerator(RedisDb redisDb, GeneratorFilter filter) {
-        this.dataBase = redisDb;
-        this.filter = filter;
+    public RedisGenerator(GeneratorFilter filter) {
+        setFilter(filter);
     }
 
     /**
@@ -37,9 +36,9 @@ public class RedisGenerator extends AbstractGenerator<String> {
     public CrawlDatum nextWithoutFilter() throws Exception {
         String datumString;
         CrawlDatum datum = null;
-        String parse = dataBase.getFetchDB();
+        String parse = getDataBase().getFetchDB();
         datumString = redisTemplate.opsForList().leftPop(parse);
-        //log.info("解析数据库任务提取 : " + datumstr);
+        //LOG.info("解析数据库任务提取 : " + datumstr);
         if (datumString != null) {
             datum = (CrawlDatum) serializeUtil.deserializeToObject(datumString);
         }

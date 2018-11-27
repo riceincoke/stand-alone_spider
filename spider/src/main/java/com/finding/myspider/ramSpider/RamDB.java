@@ -13,28 +13,28 @@ import java.util.HashMap;
 @Component
 public class RamDB implements DataBase<HashMap>{
     
-    private HashMap<Integer, CrawlDatum> crawlDB = new HashMap<Integer, CrawlDatum>();
-    private HashMap<Integer, CrawlDatum> fetchDB = new HashMap<Integer, CrawlDatum>();
-    private HashMap<Integer, CrawlDatum> linkDB = new HashMap<Integer, CrawlDatum>();
-    private HashMap<Integer, String> redirectDB = new HashMap<Integer, String>();
+    private HashMap<String, CrawlDatum> crawlDB = new HashMap<String, CrawlDatum>();
+    private HashMap<String, CrawlDatum> fetchDB = new HashMap<String, CrawlDatum>();
+    private HashMap<String, CrawlDatum> linkDB = new HashMap<String, CrawlDatum>();
+    private HashMap<String, String> redirectDB = new HashMap<String, String>();
 
     @Override
-    public HashMap<Integer, CrawlDatum> getCrawlDB() {
+    public HashMap<String, CrawlDatum> getCrawlDB() {
         return crawlDB;
     }
 
     @Override
-    public HashMap<Integer, CrawlDatum> getFetchDB() {
+    public HashMap<String, CrawlDatum> getFetchDB() {
         return fetchDB;
     }
 
     @Override
-    public HashMap<Integer, CrawlDatum> getLinkDB() {
+    public HashMap<String, CrawlDatum> getLinkDB() {
         return linkDB;
     }
 
     @Override
-    public HashMap<Integer, String> getRedirectDB() {
+    public HashMap<String, String> getRedirectDB() {
         return redirectDB;
     }
 

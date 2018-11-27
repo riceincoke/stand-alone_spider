@@ -11,16 +11,20 @@ import com.finding.spiderCore.entities.Page;
 import com.finding.spiderCore.http.IRequestor.Requester;
 import org.apache.log4j.Logger;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- * <p>项目名称: ${小型分布式爬虫} </p>
- * <p>文件名称: ${MySpider} </p>
- * <p>描述: [爬虫初始化组件] </p>
- **/
+* @author 一杯咖啡
+* @desc 小型分布式爬虫,爬虫初始化组件
+* @createTime  ${YEAR}-${MONTH}-${DAY}-${TIME}
+*/
 public class MySpider extends AbstractAutoParseCrawler {
 
-    private static Logger log = Logger.getLogger(MySpider.class);
+    private static final Logger LOG = Logger.getLogger(MySpider.class);
     /**
-     * desc:网站配置信息
+     * siteConfig 网站配置信息
+     * paresUtil 页面解析辅助工具
+     * paresContent 页面解析组件
      **/
     private SiteConfig siteconfig;
     private ParesUtil paresUtil;
@@ -36,7 +40,7 @@ public class MySpider extends AbstractAutoParseCrawler {
 
     public MySpider() {
         //设置任务上限
-        this.configuration.setTopN(200);
+        this.configuration.setTopN(600);
         //设置线程数
         this.setThreads(50);
     }
@@ -45,8 +49,7 @@ public class MySpider extends AbstractAutoParseCrawler {
      * @param siteConfig   网站配置信息
      * @param paresContent 自定义页面解析器
      * @param requester    自定义请求工具 需实现requestor接口
-     * @Title：${enclosing_method}
-     * @Description: [初始化爬虫组件]
+     * desc :初始化爬虫组件
      */
     public void initMySpider(SiteConfig siteConfig, ParesContent paresContent, Requester requester, ParesUtil paresUtil) {
         this.siteconfig = siteConfig;
@@ -57,17 +60,17 @@ public class MySpider extends AbstractAutoParseCrawler {
         RulesSplitUtil rulesSplitUtil = paresUtil.getRulesSplitUtil();
         urlRules = rulesSplitUtil.splitRule(siteconfig.getUrlPares());
         seeds = rulesSplitUtil.splitRule(siteconfig.getSeeds());
-        conPickRules = rulesSplitUtil.splitRule(siteconfig.getContentPares());
+        conPickRules = rulesSplitUtil.splitRule(siteconfig.getPageParse());
         configSpider(siteConfig);
     }
 
     /**
-     * desc: 加载爬虫属性
-     **/
+     * @param siteConfig   网站配置信息
+     * desc :初始化爬虫属性
+     */
     public void configSpider(SiteConfig siteConfig) {
         //设置爬虫入口
         this.addMyRegx();
-
         //设置断点爬取
         this.setResumable(siteconfig.isRes());
         //设置自动解析url
@@ -75,77 +78,37 @@ public class MySpider extends AbstractAutoParseCrawler {
     }
 
     /**
-     * @Title：${enclosing_method}
-     * @Description: [规则注入]
+     * desc:规则注入
      */
     public void addMyRegx() {
         //注入规则
         for (String str : seeds) {
-            log.info("入口：" + str);
+            LOG.info("入口：" + str);
             this.addSeed(str, true);
         }
         for (String n : conPickRules) {
-            log.info("正文提取规则注入:" + n);
+            LOG.info("正文提取规则注入:" + n);
             this.addRegex(n);
         }
         for (String u : urlRules) {
-            log.info("url提取规则注入:" + u);
+            LOG.info("url提取规则注入:" + u);
             this.addRegex(u);
         }
     }
 
     /**
-     * @Title：${enclosing_method}
-     * @Description: [开启抓取任务]
+     * desc: 初始化完成，开始爬虫
      */
     public void startFetcher(MySpider spider) {
         try {
             spider.start(siteconfig.getDeepPath());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("开启爬虫失败");
         }
     }
 
     /**
-     * @Title：${enclosing_method}
-     * @Description: [任务完成后执行]
-     */
-    @Override
-    public void afterStop() {
-        log.info(paresUtil.getParesCounter().toString());
-        log.info("等待10秒 继续下一任务--------------------------");
-        try {
-            Thread.sleep(10000);
-            //log.info("又开始抓取拉——————————————————");
-            //this.startFetcher(this);
-            //从mysql 中加载配置到redis中
-           /* mysqlToRedis.MysqlWirteRedis();
-            String objstr;
-            //阻塞直到能取出值
-            while (true) {
-                objstr = (String) redisTemplate.opsForList().leftPop("sites");
-                //objstr = js.lpop("sites");
-                if ("".equals(objstr) || objstr == null) {
-                    log.error("redis 列表为空");
-                    Thread.sleep(5000);
-                } else {
-                    break;
-                }
-            }*/
-            // Object o = serializeUtil.deserializeToObject(objstr);
-            //  SiteConfig sc = (SiteConfig) o;
-            // log.info(sc.getSiteName() + " 装载中+++++");
-            //MySpider mySpider = new MySpider();
-            //  mySpider.init(sc);
-            //this.StartFetcher(this);
-            //mySpider.StartFetcher(mySpider);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * desc:自定义解析页面
+     * desc: 符合正文提取规则。调用自定义解析页面
      **/
     @Override
     public void visit(Page page, CrawlDatums next) {
@@ -156,4 +119,42 @@ public class MySpider extends AbstractAutoParseCrawler {
             }
         }
     }
+
+    /**
+     *  desc: 爬虫完成后执行
+     */
+    @Override
+    public void afterStop() {
+        LOG.info(paresUtil.getParesCounter().toString());
+        LOG.info("等待10秒 继续下一任务--------------------------");
+        try {
+            TimeUnit.SECONDS.sleep(10);
+            //LOG.info("又开始抓取拉——————————————————");
+            //this.startFetcher(this);
+            //从mysql 中加载配置到redis中
+           /* mysqlToRedis.MysqlWirteRedis();
+            String objstr;
+            //阻塞直到能取出值
+            while (true) {
+                objstr = (String) redisTemplate.opsForList().leftPop("sites");
+                //objstr = js.lpop("sites");
+                if ("".equals(objstr) || objstr == null) {
+                    LOG.error("redis 列表为空");
+                    Thread.sleep(5000);
+                } else {
+                    break;
+                }
+            }*/
+            // Object o = serializeUtil.deserializeToObject(objstr);
+            //  SiteConfig sc = (SiteConfig) o;
+            // LOG.info(sc.getSiteName() + " 装载中+++++");
+            //MySpider mySpider = new MySpider();
+            //  mySpider.init(sc);
+            //this.StartFetcher(this);
+            //mySpider.StartFetcher(mySpider);
+        } catch (Exception e) {
+            LOG.error("再启动爬虫失败");
+        }
+    }
+
 }

@@ -15,18 +15,18 @@ import org.springframework.stereotype.Component;
 
 /**
  * desc:连接操作redis类
- **/
+ * @author 一杯咖啡
+ * */
 @Component
-public class RedisManager extends AbstractDBManager {
-    private static final Logger log = Logger.getLogger(RedisManager.class);
+public class RedisManager extends AbstractDBManager<String> {
+    private static final Logger LOG = Logger.getLogger(RedisManager.class);
 
-    private DataBase<String> redisDb;
+    //private DataBase redisDb;
     private RedisTemplate<String, String> redisTemplate;
     private SerializeUtil serializeUtil;
 
     public RedisManager(RedisDb redisDb, RedisGenerator generator) {
-        super(generator);
-        this.redisDb = redisDb;
+        super(generator, redisDb);
         this.serializeUtil = generator.getSerializeUtil();
         this.redisTemplate = generator.getRedisTemplate();
     }
@@ -43,7 +43,7 @@ public class RedisManager extends AbstractDBManager {
     public void clear() throws Exception {
         redisTemplate.execute((RedisCallback<Object>) connection -> {
             connection.flushDb();
-            log.info("启动清空以前的任务数据库");
+            LOG.info("启动清空以前的任务数据库");
             return "ok";
         });
     }
@@ -68,10 +68,10 @@ public class RedisManager extends AbstractDBManager {
         } else {
             clear();
             String taskString = serializeUtil.serializeToString(datum);
-            log.info("任务入口注入 ： " + datum.url());
+            LOG.info("任务入口注入 ： " + datum.url());
             //注入任务到入口库
-            String seeds = redisDb.getCrawlDB();
-            log.info("入口数据库 :" + seeds);
+            String seeds = (String) getDataBase().getCrawlDB();
+            //LOG.info("入口数据库 :" + seeds);
             redisTemplate.opsForList().rightPush(seeds, taskString);
 
         }
@@ -88,27 +88,20 @@ public class RedisManager extends AbstractDBManager {
      **/
     @Override
     public void merge() throws Exception {
-        String seeds = redisDb.getCrawlDB();
-        String parse = redisDb.getFetchDB();
+        String seeds = (String) getDataBase().getCrawlDB();
+        String parse = (String) getDataBase().getFetchDB();
         while (redisTemplate.opsForList().size(seeds) > 0) {
             String seedStr = redisTemplate.opsForList().leftPop(seeds);
             redisTemplate.opsForList().rightPush(parse, seedStr);
         }
     }
-
-    @Override
-    public DataBase getDataBase() {
-        return null;
-    }
-
-    @Override
-    public void setDataBase(DataBase dataBase) { }
-
     /**
      * desc: 初始化写入数据库工具
      **/
     @Override
-    public void initSegmentWriter() throws Exception { }
+    public void initSegmentWriter() throws Exception {
+        this.getAbstractGenerator().initGenerator( getConfig().getTopN(), getConfig().getMaxExecuteCount());
+    }
 
     /**
      * desc: 写入已完成抓取的任务 可写入特定的数据库
@@ -116,8 +109,8 @@ public class RedisManager extends AbstractDBManager {
     @Override
     public void writeFetchSegment(CrawlDatum fetchDatum) throws Exception {
         String taskString = serializeUtil.serializeToString(fetchDatum);
-        // log.info(fetchDatum.url());
-        redisTemplate.opsForList().rightPush(redisDb.getLinkDB(), taskString);
+        // LOG.info(fetchDatum.url());
+        redisTemplate.opsForList().rightPush((String) getDataBase().getLinkDB(), taskString);
     }
 
     /**
@@ -127,8 +120,8 @@ public class RedisManager extends AbstractDBManager {
     public void writeParseSegment(CrawlDatums parseDatums) throws Exception {
         for (CrawlDatum task : parseDatums) {
             String nextTask = serializeUtil.serializeToString(task);
-            //log.info(task.url());
-            redisTemplate.opsForList().rightPush(redisDb.getFetchDB(), nextTask);
+            //LOG.info(task.url());
+            redisTemplate.opsForList().rightPush((String) getDataBase().getFetchDB(), nextTask);
         }
     }
 

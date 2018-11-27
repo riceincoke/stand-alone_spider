@@ -7,6 +7,8 @@ import com.finding.spiderCore.entities.CrawlDatum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 /**
 * @author 一杯咖啡
 * @desc 任务生产者
@@ -14,7 +16,7 @@ import org.slf4j.LoggerFactory;
 */
 public class QueueFeeder extends Thread {
 
-    private static final Logger log = LoggerFactory.getLogger(QueueFeeder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QueueFeeder.class);
 
     private FetchQueue queue;
     private AbstractDBManager abstractDbManager;
@@ -42,16 +44,18 @@ public class QueueFeeder extends Thread {
     public void stopFeeder() {
         //停止数据库提取工具
         try {
+            LOG.info("【-------------关闭数据库提取工具-------------】");
             closeGenerator();
         } catch (Exception e) {
-            log.error("stoping abstractGenerator exception");
+            LOG.error("stoping abstractGenerator exception");
         }
         FeederRunning = false;
         while (this.isAlive()) {
             try {
-                Thread.sleep(1000);
-                log.info("stopping feeder......");
+                TimeUnit.SECONDS.sleep(1);
+                LOG.info("【-------------停止任务生产者提取工具-------------】");
             } catch (InterruptedException ex) {
+                LOG.error("关闭任务生产者线程休眠停止异常");
             }
         }
     }
@@ -64,7 +68,7 @@ public class QueueFeeder extends Thread {
     public void closeGenerator() throws Exception {
         if (abstractGenerator != null) {
             abstractGenerator.close();
-            log.info("close abstractGenerator:" + abstractGenerator.getClass().getName() + " ......");
+            LOG.info("close abstractGenerator:" + abstractGenerator.getClass().getName() + " ......");
         }
     }
     /**
@@ -75,9 +79,9 @@ public class QueueFeeder extends Thread {
     public void run() {
         //获取任务生成工具 （从数据库中提取数据）
         abstractGenerator = abstractDbManager.getAbstractGenerator();
-        log.info(abstractGenerator.toString());
+        LOG.info(abstractGenerator.toString());
         //abstractGenerator.setFilter(new StatusGeneratorFilter());
-        //log.info("create abstractGenerator:" + abstractGenerator.getClass().getName());
+        //LOG.info("create abstractGenerator:" + abstractGenerator.getClass().getName());
         boolean hasMore = true;//判断任务来源中是否存在任务 redis
         FeederRunning = true;
         while (hasMore && FeederRunning) {

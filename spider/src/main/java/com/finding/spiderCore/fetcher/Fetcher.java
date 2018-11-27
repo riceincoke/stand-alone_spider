@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -72,11 +73,8 @@ public class Fetcher extends DefaultConfigImp {
             LOG.info("Please Specify A Executor!");
             return 0;
         }
-
         //合并任务库
-
         abstractDbManager.merge();
-
         try {
             abstractDbManager.initSegmentWriter();
             LOG.info("init segmentWriter:" + abstractDbManager.getClass().getName());
@@ -98,18 +96,12 @@ public class Fetcher extends DefaultConfigImp {
                 fetcherThreads[i] = new FetcherThread(this);
                 fetcherThreads[i].start();
             }
-            /*LOG.warn("打印管道中的任务");
-            fetchQueue.dump();*/
-            //主线程循环 提取 fetcher 的状态，如果为false 则开始停止爬虫
+            //主线程循环 每秒打印一次状态；fetcher 的状态，如果为false 则开始停止爬虫
             do {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                }
+                pause(1,0 );
                 LOG.info("-activeThreads=" + activeThreads.get()
                         + ", spinWaiting=" + spinWaiting.get() + ", fetchQueue.size="
                         + fetchQueue.getSize());
-
                 if (!queueFeeder.isAlive() && fetchQueue.getSize() < 5) {
                     fetchQueue.dump();
                 }
@@ -124,25 +116,23 @@ public class Fetcher extends DefaultConfigImp {
 
             //立即停止任务添加到管道
             //queueFeeder.stopFeeder();
-            fetcherRuning = false;
+            //fetcherRuning = false;
             long waitThreadEndStartTime = System.currentTimeMillis();
             if (activeThreads.get() > 0) {
                 LOG.info("wait for activeThreads to end");
             }
-            /*判断时候用活动线程 清理所有活动线程*/
+            /*判断活动线程数量 清理所有活动线程*/
             while (activeThreads.get() > 0) {
                 LOG.info("-activeThreads=" + activeThreads.get());
-                try {
-                    Thread.sleep(500);
-                } catch (Exception ex) {
-                }
+                pause(0,500);
                 //如果当前等待时间超过设置的线程停止时间，强制停止所有线程
                 if (System.currentTimeMillis() - waitThreadEndStartTime > getConfig().getWaitThreadEndTime()) {
                     LOG.info("kill threads");
                     for (int i = 0; i < fetcherThreads.length; i++) {
                         if (fetcherThreads[i].isAlive()) {
                             try {
-                                fetcherThreads[i].stop();
+                                fetcherRuning = false;
+                                //fetcherThreads[i].stop();
                                 LOG.info("kill thread " + i);
                             } catch (Exception ex) {
                                 LOG.info("Exception", ex);
@@ -170,10 +160,10 @@ public class Fetcher extends DefaultConfigImp {
      * 停止爬取
      */
     public void stopFetcher() {
-        //关闭任务添加工具
-        LOG.info("停止任务中。。。。。。。。。。。。。。。。。。。。。。。");
+        //停止任务添加工具
+        LOG.info("【----------停止任务生产者----------】");
         queueFeeder.stopFeeder();
-        //关闭调度器
+        //停止调度器
         fetcherRuning = false;
     }
 
@@ -234,4 +224,15 @@ public class Fetcher extends DefaultConfigImp {
         return fetcherRuning;
     }
 
+    /**
+     * desc: 线程休眠
+     **/
+    public void pause(int second,int mills){
+        try {
+            TimeUnit.SECONDS.sleep(second);
+            TimeUnit.MILLISECONDS.sleep(mills);
+        } catch (InterruptedException e) {
+            LOG.error("Fetcher thread sleep exception");
+        }
+    }
 }

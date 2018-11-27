@@ -1,20 +1,3 @@
-/*
- * Copyright (C) 2014 hu
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package com.finding.spiderCore.crawldb;
 
 
@@ -33,26 +16,27 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
 
     public static final Logger LOG = LoggerFactory.getLogger(AbstractGenerator.class.getSimpleName());
 
-    protected DataBase<T> dataBase;
-    protected GeneratorFilter filter = null;
-    protected int topN = 0;
+    private DataBase<T> dataBase;
+    private GeneratorFilter filter = null;
+    private int topN = 0;
 
-    protected int totalGenerate;
-    protected int maxExecuteCount;
+    private int totalGenerate;
+    private int maxExecuteCount;
 
     public AbstractGenerator() {
-        this.setTopN(configuration.getTopN());
         this.totalGenerate = 0;
 //      this.maxExecuteCount = getConfig().getOrDefault(Configuration.KEY_MAX_EXECUTE_COUNT, Integer.MAX_VALUE);
-        this.maxExecuteCount = getConfig().getMaxExecuteCount();
     }
-
+    public void initGenerator(Integer topN,Integer maxExecuteCount){
+        this.setTopN(topN);
+        this.maxExecuteCount = maxExecuteCount;
+    }
     /**
      * return null if there is no CrawlDatum to generate
      * @return
      */
     public CrawlDatum next(){
-        if(topN > 0 && totalGenerate >= topN){
+        if(getTopN() > 0 && totalGenerate >= getTopN()){
             return null;
         }
         CrawlDatum datum;
@@ -78,28 +62,6 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
 
     public abstract CrawlDatum nextWithoutFilter() throws Exception;
 
-
-    public int getTopN() {
-        return topN;
-    }
-
-    public void setTopN(int topN) {
-        this.topN = topN;
-    }
-
-
-    public int getMaxExecuteCount() {
-        return maxExecuteCount;
-    }
-
-    public void setMaxExecuteCount(int maxExecuteCount) {
-        this.maxExecuteCount = maxExecuteCount;
-    }
-
-    public int getTotalGenerate(){
-        return totalGenerate;
-    }
-
     public abstract void close() throws Exception;
 
     public GeneratorFilter getFilter() {
@@ -111,17 +73,47 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
         this.filter = filter;
     }
 
-    public DataBase getDataBase() {
-        return dataBase;
-    }
 
     @Override
     public String toString() {
         return "AbstractGenerator{" +
-                "\n generatorFilter=" +(filter == null? "null":filter.getClass().getName()) +
-                "\n topN=" + topN +
-                "\n totalGenerate=" + totalGenerate +
-                "\n maxExecuteCount=" + maxExecuteCount +
+                "dataBase=" + dataBase +
+                ", filter=" + filter +
+                ", topN=" + topN +
+                ", totalGenerate=" + totalGenerate +
+                ", maxExecuteCount=" + maxExecuteCount +
                 '}';
+    }
+
+    public DataBase<T> getDataBase() {
+        return dataBase;
+    }
+
+    public void setDataBase(DataBase<T> dataBase) {
+        this.dataBase = dataBase;
+    }
+
+    public int getTopN() {
+        return topN;
+    }
+
+    public void setTopN(int topN) {
+        this.topN = topN;
+    }
+
+    public int getTotalGenerate() {
+        return totalGenerate;
+    }
+
+    public void setTotalGenerate(int totalGenerate) {
+        this.totalGenerate = totalGenerate;
+    }
+
+    public int getMaxExecuteCount() {
+        return maxExecuteCount;
+    }
+
+    public void setMaxExecuteCount(int maxExecuteCount) {
+        this.maxExecuteCount = maxExecuteCount;
     }
 }

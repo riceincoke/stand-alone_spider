@@ -2,10 +2,10 @@ package com.finding.myspider.spiderTools;
 
 import com.finding.myspider.DbUtils.DataStoreTool;
 import com.finding.myspider.DbUtils.IStore.Store;
-import com.finding.myspider.entity.ContentRules;
+import com.finding.myspider.entity.ParseContentRules;
 import com.finding.myspider.entity.MyNew;
 import com.finding.myspider.entity.SiteConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,28 +15,28 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ParesUtil {
-
-    @Autowired private Selectors selectors;
-    @Autowired private RulesSplitUtil rulesSplitUtil;
-    @Autowired private ParesCounter paresCounter;
-    @Autowired private TimeFilter timeFilter;
+    private static final Logger LOG = Logger.getLogger(ParesUtil.class);
+    private Selectors selectors = new Selectors();
+    private RulesSplitUtil rulesSplitUtil = new RulesSplitUtil();
+    private ParesCounter paresCounter = new ParesCounter();
+    private TimeFilter timeFilter = new TimeFilter();
     /**
      * DataToDB 数据持久化工具
      * contentRules 页面正文提取规则 原始字符串
      * contRules 解析后的正文提取规则
      */
     private Store store;
-    private ContentRules contentRules;
+    private ParseContentRules parseContentRules;
     private String[] contRules;
 
     public ParesUtil(){}
     /**
-     * 初始化 自定义页面解析器
+     * 初始化 自定义页面规则
      * @param siteConfig 网站匹配规则
      */
     public void initParesUitl(SiteConfig siteConfig, DataStoreTool store){
-        this.contentRules = siteConfig.getContentRules();
-        this.contRules = rulesSplitUtil.splitRule(siteConfig.getContentPares());
+        this.parseContentRules = siteConfig.getParseContentRules();
+        this.contRules = rulesSplitUtil.splitRule(siteConfig.getPageParse());
         this.store = store;
     }
     public Selectors getSelectors() {
@@ -59,8 +59,8 @@ public class ParesUtil {
         return store;
     }
 
-    public ContentRules getContentRules() {
-        return contentRules;
+    public ParseContentRules getParseContentRules() {
+        return parseContentRules;
     }
 
     public String[] getContRules() {

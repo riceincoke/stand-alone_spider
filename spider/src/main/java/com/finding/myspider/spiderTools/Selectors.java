@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 /**
  * 网页标签选择器
  */
-@Component
 public class Selectors {
 
     /**

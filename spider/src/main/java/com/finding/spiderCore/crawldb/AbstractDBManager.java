@@ -6,15 +6,20 @@ import com.finding.spiderCore.crawldb.Idbutil.SegmentWriter;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
 import com.finding.spiderCore.spiderConfig.DefaultConfigImp;
-
-public abstract class AbstractDBManager extends DefaultConfigImp implements Injector, SegmentWriter {
+/**
+* @author 一杯咖啡
+* @desc 抽象数据库管理，Injector 注入入口，SegmentWriter 写入解析结果
+* @createTime  ${YEAR}-${MONTH}-${DAY}-${TIME}
+*/
+public abstract class AbstractDBManager<T> extends DefaultConfigImp implements Injector, SegmentWriter {
 
     private AbstractGenerator abstractGenerator;
-    private DataBase dataBase;
+    private DataBase<T> dataBase;
 
-    public AbstractDBManager(AbstractGenerator abstractGenerator){
-            setAbstractGenerator(abstractGenerator);
-            setDataBase(abstractGenerator.getDataBase());
+    public AbstractDBManager(AbstractGenerator<T> abstractGenerator,DataBase<T> dataBase){
+        abstractGenerator.setDataBase(dataBase);
+        this.abstractGenerator = abstractGenerator;
+        this.dataBase = dataBase;
         }
     public abstract boolean isDBExists();
 

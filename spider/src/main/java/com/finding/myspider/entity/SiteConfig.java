@@ -14,7 +14,7 @@ public class SiteConfig implements Serializable {
     //断点
     private boolean Res;
     //提取页面规则
-    private String ContentPares;
+    private String PageParse;
     //url提取规则
     private String urlPares;
     //任务入口
@@ -28,7 +28,7 @@ public class SiteConfig implements Serializable {
     //代理ip
     private HashMap<String, Integer> proxys = new HashMap<String, Integer>();
     //页面提取规则
-    private ContentRules ContentRules;
+    private ParseContentRules ParseContentRules;
 
     public SiteConfig() {
     }
@@ -39,14 +39,14 @@ public class SiteConfig implements Serializable {
                 "SiteName='" + SiteName + '\'' +
                 ", SiteUrl='" + SiteUrl + '\'' +
                 ", Res=" + Res +
-                ", ContentPares='" + ContentPares + '\'' +
+                ", PageParse='" + PageParse + '\'' +
                 ", urlPares='" + urlPares + '\'' +
                 ", seeds='" + seeds + '\'' +
                 ", deepPath=" + deepPath +
                 ", autoParse=" + autoParse +
                 ", tableName='" + tableName + '\'' +
                 ", proxys=" + proxys +
-                ", ContentRules=" + ContentRules +
+                ", ContentRules=" + ParseContentRules +
                 '}';
     }
 
@@ -74,12 +74,12 @@ public class SiteConfig implements Serializable {
         Res = res;
     }
 
-    public String getContentPares() {
-        return ContentPares;
+    public String getPageParse() {
+        return PageParse;
     }
 
-    public void setContentPares(String contentPares) {
-        ContentPares = contentPares;
+    public void setPageParse(String contentPares) {
+        PageParse = contentPares;
     }
 
     public String getUrlPares() {
@@ -130,12 +130,12 @@ public class SiteConfig implements Serializable {
         this.proxys = proxys;
     }
 
-    public ContentRules getContentRules() {
-        return ContentRules;
+    public ParseContentRules getParseContentRules() {
+        return ParseContentRules;
     }
 
-    public void setContentRules(ContentRules contentRules) {
-        ContentRules = contentRules;
+    public void setParseContentRules(ParseContentRules parseContentRules) {
+        ParseContentRules = parseContentRules;
     }
 
 }
