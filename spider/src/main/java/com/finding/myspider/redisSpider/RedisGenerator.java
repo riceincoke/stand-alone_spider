@@ -35,14 +35,13 @@ public class RedisGenerator extends AbstractGenerator<String> {
      **/
     @Override
     public CrawlDatum nextWithoutFilter() throws Exception {
-        String url;
-        String parse = dataBase.getFetchDB();
-        url = redisTemplate.opsForList().leftPop(parse);
-        //log.info("解析数据库任务提取 : " + datumstr);
+        String datumString;
         CrawlDatum datum = null;
-        if (url != null) {
-            //CrawlDatum datum = (CrawlDatum) serializeUtil.deserializeToObject(datumstr);
-            datum = new CrawlDatum(url);
+        String parse = dataBase.getFetchDB();
+        datumString = redisTemplate.opsForList().leftPop(parse);
+        //log.info("解析数据库任务提取 : " + datumstr);
+        if (datumString != null) {
+            datum = (CrawlDatum) serializeUtil.deserializeToObject(datumString);
         }
         return datum;
     }

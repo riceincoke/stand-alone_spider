@@ -37,8 +37,7 @@ public class CrawlDatumFormater {
     //判断链接是否已经执行，成功还是失败
     public static String datumToString(CrawlDatum datum) {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nKEY: ").append(datum.key())
-                .append("\nURL: ").append(datum.url())
+        sb.append("\nURL: ").append(datum.url())
                 .append("\nSTATUS: ");
 
         switch (datum.getStatus()) {

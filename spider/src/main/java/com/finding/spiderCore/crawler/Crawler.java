@@ -11,7 +11,9 @@ import com.finding.spiderCore.spiderConfig.configUtil.ConfigurationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * desc:单层爬虫
+ **/
 public class Crawler extends DefaultConfigImp {
 
     private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
@@ -132,9 +134,6 @@ public class Crawler extends DefaultConfigImp {
     public void addSeed(CrawlDatum datum) {
         addSeedAndReturn(datum);
     }
-
-
-
     /**
      * 添加种子集合
      *
@@ -154,16 +153,6 @@ public class Crawler extends DefaultConfigImp {
         addSeedAndReturn(datums);
     }
 
-    /**
-     * 与addSeed(CrawlDatums datums, boolean force) 类似
-     *
-     * @param links 种子URL集合
-     * @param type 种子的type标识信息
-     * @param force 是否强制注入
-     */
-    public void addSeed(Iterable<String> links, String type, boolean force) {
-        addSeedAndReturn(links, force).type(type);
-    }
 
     /**
      * 与addSeed(CrawlDatums datums, boolean force) 类似
@@ -186,28 +175,6 @@ public class Crawler extends DefaultConfigImp {
     }
 
     /**
-     * 与addSeed(CrawlDatums datums)类似
-     *
-     * @param links 种子URL集合
-     * @param type 种子的type标识信息
-     */
-    public void addSeed(Iterable<String> links, String type) {
-        addSeedAndReturn(links).type(type);
-    }
-
-
-    /**
-     * 与addSeed(CrawlDatum datum, boolean force)类似
-     *
-     * @param url 种子URL
-     * @param type 种子的type标识信息
-     * @param force 是否强制注入
-     */
-    public void addSeed(String url, String type, boolean force) {
-        addSeedAndReturn(url,force).type(type);
-    }
-
-    /**
      * 与addSeed(CrawlDatum datum, boolean force)类似
      *
      * @param url 种子URL
@@ -215,17 +182,6 @@ public class Crawler extends DefaultConfigImp {
      */
     public void addSeed(String url, boolean force) {
         addSeedAndReturn(url,force);
-    }
-
-
-    /**
-     * 与addSeed(CrawlDatum datum)类似
-     *
-     * @param type 种子的type标识信息
-     * @param url 种子URL
-     */
-    public void addSeed(String url, String type) {
-        addSeedAndReturn(url).type(type);
     }
 
     /**

@@ -41,7 +41,11 @@ public class RedisManager extends AbstractDBManager {
 
     @Override
     public void clear() throws Exception {
-        redisTemplate.delete("");
+        redisTemplate.execute((RedisCallback<Object>) connection -> {
+            connection.flushDb();
+            log.info("启动清空以前的任务数据库");
+            return "ok";
+        });
     }
 
     @Override
@@ -59,13 +63,18 @@ public class RedisManager extends AbstractDBManager {
      **/
     @Override
     public void inject(CrawlDatum datum, boolean force) throws Exception {
-        flushdb();
-        //String taskString = serializeUtil.serializeToString(datum.url());
-        log.info("任务入口注入 ： " + datum.url());
-        //注入任务到入口库
-        String seeds = redisDb.getCrawlDB();
-        log.info("入口数据库 :" + seeds);
-        redisTemplate.opsForList().rightPush(seeds, datum.url());
+        if (!isDBExists()) {
+            throw new Exception("redis 数据库无效");
+        } else {
+            clear();
+            String taskString = serializeUtil.serializeToString(datum);
+            log.info("任务入口注入 ： " + datum.url());
+            //注入任务到入口库
+            String seeds = redisDb.getCrawlDB();
+            log.info("入口数据库 :" + seeds);
+            redisTemplate.opsForList().rightPush(seeds, taskString);
+
+        }
     }
 
     @Override
@@ -74,7 +83,6 @@ public class RedisManager extends AbstractDBManager {
             inject(x, force);
         }
     }
-
     /**
      * desc: 合并入口数据库
      **/
@@ -94,26 +102,22 @@ public class RedisManager extends AbstractDBManager {
     }
 
     @Override
-    public void setDataBase(DataBase dataBase) {
-
-    }
+    public void setDataBase(DataBase dataBase) { }
 
     /**
      * desc: 初始化写入数据库工具
      **/
     @Override
-    public void initSegmentWriter() throws Exception {
-
-    }
+    public void initSegmentWriter() throws Exception { }
 
     /**
      * desc: 写入已完成抓取的任务 可写入特定的数据库
      **/
     @Override
     public void writeFetchSegment(CrawlDatum fetchDatum) throws Exception {
-        //String taskString = serializeUtil.serializeToString(fetchDatum);
+        String taskString = serializeUtil.serializeToString(fetchDatum);
         // log.info(fetchDatum.url());
-        redisTemplate.opsForList().rightPush(redisDb.getLinkDB(), fetchDatum.url());
+        redisTemplate.opsForList().rightPush(redisDb.getLinkDB(), taskString);
     }
 
     /**
@@ -122,9 +126,9 @@ public class RedisManager extends AbstractDBManager {
     @Override
     public void writeParseSegment(CrawlDatums parseDatums) throws Exception {
         for (CrawlDatum task : parseDatums) {
-            //String nextTask = serializeUtil.serializeToString(task);
+            String nextTask = serializeUtil.serializeToString(task);
             //log.info(task.url());
-            redisTemplate.opsForList().rightPush(redisDb.getFetchDB(), task.url());
+            redisTemplate.opsForList().rightPush(redisDb.getFetchDB(), nextTask);
         }
     }
 
@@ -134,16 +138,5 @@ public class RedisManager extends AbstractDBManager {
     @Override
     public void closeSegmentWriter() throws Exception {
 
-    }
-
-    /**
-     * desc: 清空数据库
-     **/
-    public void flushdb() {
-        redisTemplate.execute((RedisCallback<Object>) connection -> {
-            connection.flushDb();
-            log.info("启动清空以前的任务数据库");
-            return "ok";
-        });
     }
 }

@@ -57,13 +57,13 @@ public class RamDBManager extends AbstractDBManager {
 
     @Override
     public void inject(CrawlDatum datum, boolean force) throws Exception {
-        String key = datum.key();
         if (!force) {
-            if (ramDB.getCrawlDB().containsKey(key)) {
+            if (ramDB.getCrawlDB().containsKey(datum.getStatus())) {
                 return;
             }
         }
-        ramDB.getCrawlDB().put(key, datum);
+        datum.setStatus(0);
+        ramDB.getCrawlDB().put(datum.getStatus(), datum);
     }
     
     @Override
@@ -79,13 +79,13 @@ public class RamDBManager extends AbstractDBManager {
 
         /*合并fetch库*/
         LOG.info("merge fetch database");
-        for (Map.Entry<String, CrawlDatum> fetchEntry : ramDB.getFetchDB().entrySet()) {
+        for (Map.Entry<Integer, CrawlDatum> fetchEntry : ramDB.getFetchDB().entrySet()) {
             ramDB.getCrawlDB().put(fetchEntry.getKey(), fetchEntry.getValue());
         }
 
         /*合并link库*/
         LOG.info("merge link database");
-        for (String key : ramDB.getLinkDB().keySet()) {
+        for (Integer key : ramDB.getLinkDB().keySet()) {
             if (!ramDB.getCrawlDB().containsKey(key)) {
                 ramDB.getCrawlDB().put(key, ramDB.getLinkDB().get(key));
             }
@@ -106,13 +106,13 @@ public class RamDBManager extends AbstractDBManager {
 
     @Override
     public synchronized void writeFetchSegment(CrawlDatum fetchDatum) throws Exception {
-        ramDB.getFetchDB().put(fetchDatum.key(), fetchDatum);
+        ramDB.getFetchDB().put(fetchDatum.getStatus(), fetchDatum);
     }
 
     @Override
     public synchronized void writeParseSegment(CrawlDatums parseDatums) throws Exception {
         for (CrawlDatum datum : parseDatums) {
-            ramDB.getLinkDB().put(datum.key(), datum);
+            ramDB.getLinkDB().put(datum.getStatus(), datum);
         }
     }
 

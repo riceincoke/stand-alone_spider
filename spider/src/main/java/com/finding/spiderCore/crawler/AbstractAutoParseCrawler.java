@@ -12,7 +12,7 @@ import com.finding.spiderCore.spiderConfig.configUtil.ConfigurationUtils;
 import org.jsoup.nodes.Document;
 
 /**
- * 任务爬取类
+ * 自动爬取解析爬虫
  */
 public abstract class AbstractAutoParseCrawler extends Crawler implements Executor,Visitor {
 

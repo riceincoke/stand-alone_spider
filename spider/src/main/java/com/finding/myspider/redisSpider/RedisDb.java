@@ -2,6 +2,7 @@ package com.finding.myspider.redisSpider;
 
 import com.finding.spiderCore.crawldb.Idbutil.DataBase;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,8 +36,10 @@ public class RedisDb implements DataBase<String> {
         return redirectList;
     }
 
+    /**
+     * desc: 清空数据库
+     **/
     @Override
     public void clear() {
-
     }
 }

@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
  * <p>项目名称: ${小型分布式爬虫} </p>
  * <p>文件名称: ${MySpider} </p>
  * <p>描述: [爬虫初始化组件] </p>
- *
  **/
 public class MySpider extends AbstractAutoParseCrawler {
 
@@ -41,14 +40,15 @@ public class MySpider extends AbstractAutoParseCrawler {
         //设置线程数
         this.setThreads(50);
     }
+
     /**
+     * @param siteConfig   网站配置信息
+     * @param paresContent 自定义页面解析器
+     * @param requester    自定义请求工具 需实现requestor接口
      * @Title：${enclosing_method}
      * @Description: [初始化爬虫组件]
-     * @param  siteConfig 网站配置信息
-     * @param  paresContent 自定义页面解析器
-     * @param requester 自定义请求工具 需实现requestor接口
      */
-    public void initMySpider(SiteConfig siteConfig, ParesContent paresContent, Requester requester, ParesUtil paresUtil){
+    public void initMySpider(SiteConfig siteConfig, ParesContent paresContent, Requester requester, ParesUtil paresUtil) {
         this.siteconfig = siteConfig;
         this.paresContent = paresContent;
         this.requester = requester;
@@ -60,18 +60,20 @@ public class MySpider extends AbstractAutoParseCrawler {
         conPickRules = rulesSplitUtil.splitRule(siteconfig.getContentPares());
         configSpider(siteConfig);
     }
+
     /**
      * desc: 加载爬虫属性
      **/
-    public void configSpider(SiteConfig siteConfig){
-         //设置爬虫入口
-         this.addMyRegx();
+    public void configSpider(SiteConfig siteConfig) {
+        //设置爬虫入口
+        this.addMyRegx();
 
-         //设置断点爬取
-         this.setResumable(siteconfig.isRes());
-         //设置自动解析url
-         this.setAutoParse(siteConfig.isAutoParse());
+        //设置断点爬取
+        this.setResumable(siteconfig.isRes());
+        //设置自动解析url
+        this.setAutoParse(siteConfig.isAutoParse());
     }
+
     /**
      * @Title：${enclosing_method}
      * @Description: [规则注入]
@@ -130,11 +132,11 @@ public class MySpider extends AbstractAutoParseCrawler {
                     break;
                 }
             }*/
-           // Object o = serializeUtil.deserializeToObject(objstr);
-          //  SiteConfig sc = (SiteConfig) o;
-           // log.info(sc.getSiteName() + " 装载中+++++");
+            // Object o = serializeUtil.deserializeToObject(objstr);
+            //  SiteConfig sc = (SiteConfig) o;
+            // log.info(sc.getSiteName() + " 装载中+++++");
             //MySpider mySpider = new MySpider();
-          //  mySpider.init(sc);
+            //  mySpider.init(sc);
             //this.StartFetcher(this);
             //mySpider.StartFetcher(mySpider);
         } catch (Exception e) {
@@ -142,13 +144,15 @@ public class MySpider extends AbstractAutoParseCrawler {
         }
     }
 
+    /**
+     * desc:自定义解析页面
+     **/
     @Override
     public void visit(Page page, CrawlDatums next) {
-
         //匹配正文筛选规则 url
         for (String conRegx : conPickRules) {
             if (page.url().matches(conRegx)) {
-                paresContent.paresContent(page,next);
+                paresContent.paresContent(page, next);
             }
         }
     }

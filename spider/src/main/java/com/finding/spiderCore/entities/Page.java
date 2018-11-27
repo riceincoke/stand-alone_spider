@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 /**
  * Page是爬取过程中，内存中保存网页爬取信息的一个容器，Page只在内存中存放，用于保存一些网页信息，方便用户进行自定义网页解析之类的操作。
  */
-public class Page implements MetaGetter, MetaSetter<Page> {
+public class Page{
 
     public static final Logger LOG = LoggerFactory.getLogger(Page.class);
 
@@ -68,16 +68,6 @@ public class Page implements MetaGetter, MetaSetter<Page> {
      */
     public boolean matchUrl(String urlRegex) {
         return Pattern.matches(urlRegex, url());
-    }
-
-    /**
-     * 判断当前Page(CrawlDatum)的type是否为type
-     *
-     * @param type
-     * @return 是否相等
-     */
-    public boolean matchType(String type) {
-        return crawlDatum.matchType(type);
     }
 
     /**
@@ -364,7 +354,7 @@ public class Page implements MetaGetter, MetaSetter<Page> {
         try {
             html = new String(content, charset);
         } catch (UnsupportedEncodingException e) {
-            LOG.info("Exception when decoding " + key(), e);
+            LOG.info("Exception when decoding ", e);
             return null;
         }
         return html;
@@ -430,46 +420,6 @@ public class Page implements MetaGetter, MetaSetter<Page> {
         this.crawlDatum = crawlDatum;
     }
 
-
-    @Override
-    public JsonObject meta() {
-        return crawlDatum.meta();
-    }
-
-    @Override
-    public String meta(String key) {
-        return crawlDatum.meta(key);
-    }
-
-    @Override
-    public int metaAsInt(String key) {
-        return crawlDatum.metaAsInt(key);
-    }
-
-    @Override
-    public boolean metaAsBoolean(String key) {
-        return crawlDatum.metaAsBoolean(key);
-    }
-
-    @Override
-    public double metaAsDouble(String key) {
-        return crawlDatum.metaAsDouble(key);
-    }
-
-    @Override
-    public long metaAsLong(String key) {
-        return crawlDatum.metaAsLong(key);
-    }
-
-//    public void meta(HashMap<String, String> metaData) {
-//        this.crawlDatum.meta(metaData);
-//    }
-//
-//    public void meta(String key, String value) {
-//        this.crawlDatum.meta(key, value);
-//    }
-
-
     public String charset() {
         if (charset == null) {
             charset = CharsetDetector.guessEncoding(content());
@@ -479,11 +429,6 @@ public class Page implements MetaGetter, MetaSetter<Page> {
 
     public void charset(String charset) {
         this.charset = charset;
-    }
-
-
-    public String key() {
-        return crawlDatum.key();
     }
 
     public void code(int code) {
@@ -501,41 +446,5 @@ public class Page implements MetaGetter, MetaSetter<Page> {
 
     public void obj(Object obj) {
         this.obj = obj;
-    }
-
-    @Override
-    public Page meta(JsonObject metaData) {
-        crawlDatum.meta(metaData);
-        return this;
-    }
-
-    @Override
-    public Page meta(String key, String value) {
-        crawlDatum.meta(key, value);
-        return this;
-    }
-
-    @Override
-    public Page meta(String key, int value) {
-        crawlDatum.meta(key, value);
-        return this;
-    }
-
-    @Override
-    public Page meta(String key, boolean value) {
-        crawlDatum.meta(key, value);
-        return this;
-    }
-
-    @Override
-    public Page meta(String key, double value) {
-        crawlDatum.meta(key, value);
-        return this;
-    }
-
-    @Override
-    public Page meta(String key, long value) {
-        crawlDatum.meta(key, value);
-        return this;
     }
 }

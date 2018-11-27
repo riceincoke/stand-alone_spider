@@ -1,7 +1,6 @@
 package com.finding;
 
 import com.finding.myspider.SpiderEngine;
-import com.finding.myspider.ramSpider.DemoTypeCrawler;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -22,8 +21,6 @@ public class SpringBootStartRun implements ApplicationRunner {
     private SpiderEngine spiderEngine;
     @Autowired
     private RedisTemplate redisTemplate;
-    @Autowired
-    private DemoTypeCrawler demoTypeCrawler;
 
     @PostConstruct
     public void show() {
