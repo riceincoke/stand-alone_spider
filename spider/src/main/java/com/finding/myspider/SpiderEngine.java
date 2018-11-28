@@ -4,7 +4,7 @@ package com.finding.myspider;
 import com.finding.myspider.DbUtils.ConfigFromMysqlToRedis;
 import com.finding.myspider.DbUtils.DataStoreTool;
 import com.finding.myspider.entity.SiteConfig;
-import com.finding.myspider.ramSpider.RamDBManager;
+import com.finding.myspider.redisSpider.RedisManager;
 import com.finding.myspider.spiderComponent.MyParesContent;
 import com.finding.myspider.spiderComponent.MyRequester;
 import com.finding.myspider.spiderTools.ParesUtil;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,10 +27,10 @@ public class SpiderEngine {
     /**
      * 数据存储组件
      **/
-    // @Autowired
-    // private RedisManager redisManager;
     @Autowired
-    private RamDBManager ramDBManager;
+     private RedisManager redisManager;
+    // @Autowired
+    //private RamDBManager ramDBManager;
     @Autowired
     private RedisTemplate redisTemplate;
     @Autowired
@@ -48,6 +49,7 @@ public class SpiderEngine {
     @Autowired
     private SerializeUtil serializeUtil;
 
+    @Resource private MySpider mySpider;
     /**
      * desc: 初始化爬虫
      **/
@@ -84,18 +86,20 @@ public class SpiderEngine {
             dataStoreTool.initStore(siteConfig.getTableName());
             paresUtil.initParesUitl(siteConfig, dataStoreTool);
             paresContent.MyParesContent(paresUtil);
-            MySpider mySpider = new MySpider();
-            ConfigurationUtils.setTo(mySpider, ramDBManager.getAbstractGenerator());
-            mySpider.setAbstractDbManager(ramDBManager);
+            //MySpider mySpider = new MySpider();
+           // ConfigurationUtils.setTo(mySpider, ramDBManager.getAbstractGenerator());
+            ConfigurationUtils.setTo(mySpider, paresContent,redisManager);
+            mySpider.setAbstractDbManager(redisManager);
             mySpider.initMySpider(siteConfig, paresContent, myRequester, paresUtil);
+            mySpider.getConfig().setTopN(500);
             LOG.info(this.toString());
-
             //10秒自动关闭爬虫
-            new Thread(() -> {
+           /* new Thread(() -> {
                 pause(10, 0);
                 mySpider.stop();
-            }, "关闭线程").start();
-            mySpider.startFetcher(mySpider);
+            }, "关闭线程").start();*/
+
+               mySpider.startFetcher(mySpider);
         } catch (Exception e) {
             LOG.error("初始化爬虫异常: " + e.getCause() + ";messages:" + e.getMessage());
         }
@@ -117,11 +121,12 @@ public class SpiderEngine {
     @Override
     public String toString() {
         return "\nMySpiderEngine{" +
-                "\n  ramDBManager : " + ramDBManager.getClass().getName() +
+                "\n  ramDBManager : " + redisManager.getClass().getName() +
                 "\n  redisTemplate : " + redisTemplate.getClass().getName() +
                 "\n  siteConfigCache : " + configFromMysqlToRedis.getClass().getName() +
                 "\n  myRequester : " + myRequester.getClass().getName() +
                 "\n  paresContent=" + paresContent.toString() +
                 '}';
     }
+
 }

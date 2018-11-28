@@ -16,9 +16,9 @@ public class DataStoreTool implements Store<MyNew> {
      private String tableName;
 
      public void initStore(String tableName){
-         LOG.info("DataStoreTool初始化--->>"+toString());
          this.tableName = tableName;
          creatTable(tableName);
+         LOG.info("DataStoreTool初始化--->>"+toString());
      }
 
     /**

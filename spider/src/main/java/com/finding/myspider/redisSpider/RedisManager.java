@@ -2,13 +2,9 @@ package com.finding.myspider.redisSpider;
 
 import com.finding.myspider.spiderTools.SerializeUtil;
 import com.finding.spiderCore.crawldb.AbstractDBManager;
-import com.finding.spiderCore.crawldb.Idbutil.DataBase;
 import com.finding.spiderCore.entities.CrawlDatum;
 import com.finding.spiderCore.entities.CrawlDatums;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,7 +18,7 @@ public class RedisManager extends AbstractDBManager<String> {
     private static final Logger LOG = Logger.getLogger(RedisManager.class);
 
     //private DataBase redisDb;
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate redisTemplate;
     private SerializeUtil serializeUtil;
 
     public RedisManager(RedisDb redisDb, RedisGenerator generator) {
@@ -91,7 +87,7 @@ public class RedisManager extends AbstractDBManager<String> {
         String seeds = (String) getDataBase().getCrawlDB();
         String parse = (String) getDataBase().getFetchDB();
         while (redisTemplate.opsForList().size(seeds) > 0) {
-            String seedStr = redisTemplate.opsForList().leftPop(seeds);
+            String seedStr = (String) redisTemplate.opsForList().leftPop(seeds);
             redisTemplate.opsForList().rightPush(parse, seedStr);
         }
     }
@@ -100,7 +96,7 @@ public class RedisManager extends AbstractDBManager<String> {
      **/
     @Override
     public void initSegmentWriter() throws Exception {
-        this.getAbstractGenerator().initGenerator( getConfig().getTopN(), getConfig().getMaxExecuteCount());
+     //   this.getAbstractGenerator().initGenerator( getConfig().getTopN(), getConfig().getMaxExecuteCount());
     }
 
     /**

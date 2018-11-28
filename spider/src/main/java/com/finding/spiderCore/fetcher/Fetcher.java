@@ -115,7 +115,7 @@ public class Fetcher extends DefaultConfigImp {
             } while (fetcherRuning && (startedThreads.get() != threads || activeThreads.get() > 0));
 
             //立即停止任务添加到管道
-            //queueFeeder.stopFeeder();
+            queueFeeder.stopFeeder();
             //fetcherRuning = false;
             long waitThreadEndStartTime = System.currentTimeMillis();
             if (activeThreads.get() > 0) {
@@ -131,8 +131,8 @@ public class Fetcher extends DefaultConfigImp {
                     for (int i = 0; i < fetcherThreads.length; i++) {
                         if (fetcherThreads[i].isAlive()) {
                             try {
-                                fetcherRuning = false;
-                                //fetcherThreads[i].stop();
+                               // fetcherRuning = false;
+                                fetcherThreads[i].stop();
                                 LOG.info("kill thread " + i);
                             } catch (Exception ex) {
                                 LOG.info("Exception", ex);

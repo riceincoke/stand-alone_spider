@@ -21,22 +21,19 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
     private int topN = 0;
 
     private int totalGenerate;
-    private int maxExecuteCount;
 
     public AbstractGenerator() {
         this.totalGenerate = 0;
 //      this.maxExecuteCount = getConfig().getOrDefault(Configuration.KEY_MAX_EXECUTE_COUNT, Integer.MAX_VALUE);
     }
-    public void initGenerator(Integer topN,Integer maxExecuteCount){
-        this.setTopN(topN);
-        this.maxExecuteCount = maxExecuteCount;
-    }
+
     /**
      * return null if there is no CrawlDatum to generate
+     *
      * @return
      */
-    public CrawlDatum next(){
-        if(getTopN() > 0 && totalGenerate >= getTopN()){
+    public CrawlDatum next() {
+        if (getConfig().getTopN() > 0 && totalGenerate >= getConfig().getTopN()) {
             return null;
         }
         CrawlDatum datum;
@@ -46,8 +43,8 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
                 if (datum == null) {
                     return datum;
                 }
-                if(filter == null || (datum = filter.filter(datum))!=null){
-                    if (datum.getExecuteCount() > maxExecuteCount) {
+                if (filter == null || (datum = filter.filter(datum)) != null) {
+                    if (datum.getExecuteCount() > getConfig().getMaxExecuteCount()) {
                         continue;
                     }
                     totalGenerate += 1;
@@ -77,43 +74,19 @@ public abstract class AbstractGenerator<T> extends DefaultConfigImp {
     @Override
     public String toString() {
         return "AbstractGenerator{" +
-                "dataBase=" + dataBase +
+                "dataBase=" + dataBase.getClass().getSimpleName() +
                 ", filter=" + filter +
                 ", topN=" + topN +
                 ", totalGenerate=" + totalGenerate +
-                ", maxExecuteCount=" + maxExecuteCount +
                 '}';
     }
-
     public DataBase<T> getDataBase() {
         return dataBase;
     }
-
     public void setDataBase(DataBase<T> dataBase) {
         this.dataBase = dataBase;
     }
-
-    public int getTopN() {
-        return topN;
-    }
-
-    public void setTopN(int topN) {
-        this.topN = topN;
-    }
-
     public int getTotalGenerate() {
         return totalGenerate;
-    }
-
-    public void setTotalGenerate(int totalGenerate) {
-        this.totalGenerate = totalGenerate;
-    }
-
-    public int getMaxExecuteCount() {
-        return maxExecuteCount;
-    }
-
-    public void setMaxExecuteCount(int maxExecuteCount) {
-        this.maxExecuteCount = maxExecuteCount;
     }
 }
